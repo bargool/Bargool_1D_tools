@@ -22,7 +22,7 @@ bl_info = {
     'name': 'Batch Remover',
     'author': 'Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)',
     'category': 'Object',
-    'version': (0, 8, 9),
+    'version': (0, 8, 10),
     'location': 'View3D > Toolbar',
     'category': 'Mesh'
 }
@@ -267,6 +267,8 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
             obj = context.active_object
             bm = bmesh.from_edit_mesh(obj.data)
         selected = [(v.co.x, v.co.y, v.co.z) for v in bm.verts if v.select]
+        if not selected:
+            return None
         seldict = {}
         for x, y, z in selected:
             if (x,y) in seldict:
@@ -292,7 +294,7 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
         selected = self.get_selected_verts(bm=bm, context=context)
         if not selected:
             self.report({'INFO'}, 'Must select vertices previously')
-            return {'Canceled'}
+            return {'CANCELLED'}
         count = 0
         
         behaviour = context.scene.batch_operator_settings.verticals_select_behaviour
