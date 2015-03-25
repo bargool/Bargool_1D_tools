@@ -22,7 +22,7 @@ bl_info = {
     'name': 'Batch Remover',
     'author': 'Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)',
     'category': 'Object',
-    'version': (0, 9, 1),
+    'version': (0, 9, 2),
     'location': 'View3D > Toolbar',
     'category': 'Mesh'
 }
@@ -359,8 +359,10 @@ class ImportCleanupOperator(bpy.types.Operator):
             bpy.ops.mesh.select_all(action='SELECT')
             bpy.ops.mesh.remove_doubles(threshold=0.0001, use_unselected=False)
             bpy.ops.mesh.tris_convert_to_quads(limit=0.698132, uvs=False, vcols=False, sharp=False, materials=False)
-            # remove uvs
-            bpy.ops.mesh.normals_make_consistent(inside=False)
+            # Tada!!
+            recalculate_normals = context.scene.batch_operator_settings.import_cleanup_recalculate_normals
+            if recalculate_normals:
+                bpy.ops.mesh.normals_make_consistent(inside=False)
             bpy.ops.object.mode_set(mode='OBJECT')
         
         return {'FINISHED'}
@@ -397,6 +399,8 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
         name='Options')
     
     select_global_limit = bpy.props.BoolProperty(name='Global limit', default=True)
+    
+    import_cleanup_recalculate_normals = bpy.props.BoolProperty(name='Recalculate Normals', default=False)
 
 
 class RemoverPanel(bpy.types.Panel):
@@ -433,6 +437,8 @@ class RemoverPanel(bpy.types.Panel):
         row.prop(scene.batch_operator_settings, 'verticals_select_behaviour', text='Options')
         row = layout.row(align=True)
         row.prop(scene.batch_operator_settings, 'select_global_limit')
+        row = layout.row()
+        row.prop(scene.batch_operator_settings, 'import_cleanup_recalculate_normals')
         row = layout.row()
         row.operator('mesh.import_cleanup')
 
