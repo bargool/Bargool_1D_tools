@@ -22,7 +22,7 @@ bl_info = {
     'name': 'Batch Remover',
     'author': 'Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)',
     'category': 'Object',
-    'version': (0, 8, 10),
+    'version': (0, 9, 0),
     'location': 'View3D > Toolbar',
     'category': 'Mesh'
 }
@@ -343,6 +343,26 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
 
         return {'FINISHED'}
 
+class ImportCleanupOperator(bpy.types.Operator):
+    """ Class by Paul Kotelevets """
+    bl_idname = 'mesh.import_cleanup'
+    bl_label = 'Obj Import Cleanup'
+    bl_options = { 'REGISTER', 'UNDO' }
+    
+    def execute(self, context):
+        mallas = [o for o in objetos if o.type == 'MESH' and o.is_visible(scn)]
+        obj= context.selected_objects
+        for ob in obj:
+            if ob.type == 'MESH':
+                ob.select = True
+                context.scene.objects.active = ob
+                bpy.ops.object.mode_set(mode='EDIT')
+                bpy.ops.mesh.select_all(action='SELECT')
+                bpy.ops.mesh.remove_doubles(threshold=0.0001, use_unselected=False)
+                bpy.ops.mesh.tris_convert_to_quads(limit=0.698132, uvs=False, vcols=False, sharp=False, materials=False)
+                # remove uvs
+                bpy.ops.mesh.normals_make_consistent(inside=False )
+                bpy.ops.object.mode_set(mode='OBJECT')
 
 def get_description(operator):
     """ Gets description from operator, if exists """
@@ -383,6 +403,8 @@ class RemoverPanel(bpy.types.Panel):
     bl_idname = "SCENE_PT_remover"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
+    bl_category = '1D'
+    bl_options = {'DEFAULT_CLOSED'}
     
     def draw(self, context):
         layout = self.layout
@@ -410,6 +432,8 @@ class RemoverPanel(bpy.types.Panel):
         row.prop(scene.batch_operator_settings, 'verticals_select_behaviour', text='Options')
         row = layout.row(align=True)
         row.prop(scene.batch_operator_settings, 'select_global_limit')
+        row = layout.row()
+        row.operator('mesh.import_cleanup')
 
 
 def register():
