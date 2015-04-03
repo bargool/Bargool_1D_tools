@@ -22,7 +22,7 @@ bl_info = {
     'name': 'Batch Set',
     'author': 'Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)',
     'category': 'Object',
-    'version': (0, 10, 2),
+    'version': (0, 10, 3),
     'location': 'View3D > Toolbar',
     'category': 'Mesh'
 }
@@ -413,6 +413,19 @@ class IsolateLayers(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class MatchDrawType(bpy.types.Operator):
+    bl_idname = 'object.match_draw_type'
+    bl_label = 'Match DrawType'
+    bl_options = { 'REGISTER', 'UNDO' }
+    
+    def execute(self, context):
+        context = bpy.context
+        active_object = context.active_object
+        draw_type = active_object.draw_type
+        for o in context.selected_objects:
+            o.draw_type = draw_type
+
+
 def get_description(operator):
     """ Gets description from operator, if exists """
     return hasattr(operator, 'bl_description') and operator.bl_description
@@ -484,9 +497,9 @@ class RemoverPanel(bpy.types.Panel):
         row = layout.row(align=True)
         row.prop(scene.batch_operator_settings, 'select_global_limit')
         row = layout.row()
-        row.prop(scene.batch_operator_settings, 'import_cleanup_recalculate_normals')
-        row = layout.row()
         row.operator('mesh.import_cleanup')
+        row = layout.row()
+        row.prop(scene.batch_operator_settings, 'import_cleanup_recalculate_normals')
         
         row = layout.row()
         row.operator('object.match_hide_render')
@@ -494,6 +507,8 @@ class RemoverPanel(bpy.types.Panel):
         row.operator('object.select_same_hide_render')
         row = layout.row()
         row.operator('object.isolate_layers')
+        row = layout.row()
+        row.operator('object.match_draw_type')
 
 
 def register():
