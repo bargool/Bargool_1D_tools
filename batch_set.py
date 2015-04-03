@@ -19,10 +19,10 @@
 # ##### END GPL LICENSE BLOCK #####
 
 bl_info = {
-    'name': 'Batch Remover',
+    'name': 'Batch Set',
     'author': 'Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)',
     'category': 'Object',
-    'version': (0, 9, 2),
+    'version': (0, 10, 2),
     'location': 'View3D > Toolbar',
     'category': 'Mesh'
 }
@@ -343,6 +343,7 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
 
         return {'FINISHED'}
 
+
 class ImportCleanupOperator(bpy.types.Operator):
     """ Class by Paul Kotelevets """
     bl_idname = 'mesh.import_cleanup'
@@ -360,12 +361,57 @@ class ImportCleanupOperator(bpy.types.Operator):
             bpy.ops.mesh.remove_doubles(threshold=0.0001, use_unselected=False)
             bpy.ops.mesh.tris_convert_to_quads(limit=0.698132, uvs=False, vcols=False, sharp=False, materials=False)
             # Tada!!
-            recalculate_normals = context.scene.batch_operator_settings.import_cleanup_recalculate_normals
-            if recalculate_normals:
+            do_recalculate_normals = context.scene.batch_operator_settings.import_cleanup_recalculate_normals
+            if do_recalculate_normals:
                 bpy.ops.mesh.normals_make_consistent(inside=False)
             bpy.ops.object.mode_set(mode='OBJECT')
         
         return {'FINISHED'}
+
+
+class MatchHideRender(bpy.types.Operator):
+    bl_idname = 'object.match_hide_render'
+    bl_label = 'MatchHideRender'
+    bl_options = { 'REGISTER', 'UNDO' }
+    
+    def execute(self, context):
+        active_object = context.active_object
+        hide_render = active_object.hide_render
+        for o in context.selected_objects:
+            o.hide_render = hide_render
+            o.hide = True
+            
+        return {'FINISHED'}
+
+
+class SelectSameHideRender(bpy.types.Operator):
+    bl_idname = 'object.select_same_hide_render'
+    bl_label = 'Select Same HideRender'
+    bl_options = { 'REGISTER', 'UNDO' }
+    
+    def execute(self, context):
+        scene = context.scene
+        active_object = context.active_object
+        hide_render = active_object.hide_render
+        same_objects = [o for o in scene.objects if o.hide_render == hide_render]
+        for o in same_objects:
+            o.select = True
+        
+        return {'FINISHED'}
+
+
+class IsolateLayers(bpy.types.Operator):
+    bl_idname = 'object.isolate_layers'
+    bl_label = 'Isolate Layers'
+    bl_options = { 'REGISTER', 'UNDO' }
+    
+    def execute(self, context):
+        selected_layers = [list(o.layers) for o in context.selected_objects]
+        layers = map(lambda *x: any(x), *selected_layers)
+        scene = context.scene
+        scene.layers = list(layers)
+        return {'FINISHED'}
+
 
 def get_description(operator):
     """ Gets description from operator, if exists """
@@ -404,8 +450,8 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
 
 
 class RemoverPanel(bpy.types.Panel):
-    bl_label = "Batch Remover"
-    bl_idname = "SCENE_PT_remover"
+    bl_label = "Batch Set"
+    bl_idname = "SCENE_PT_set"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
     bl_category = '1D'
@@ -441,6 +487,13 @@ class RemoverPanel(bpy.types.Panel):
         row.prop(scene.batch_operator_settings, 'import_cleanup_recalculate_normals')
         row = layout.row()
         row.operator('mesh.import_cleanup')
+        
+        row = layout.row()
+        row.operator('object.match_hide_render')
+        row = layout.row()
+        row.operator('object.select_same_hide_render')
+        row = layout.row()
+        row.operator('object.isolate_layers')
 
 
 def register():
