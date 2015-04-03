@@ -462,9 +462,9 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
     import_cleanup_recalculate_normals = bpy.props.BoolProperty(name='Recalculate Normals', default=False)
 
 
-class RemoverPanel(bpy.types.Panel):
+class BatchSetPanel(bpy.types.Panel):
     bl_label = "Batch Set"
-    bl_idname = "SCENE_PT_set"
+    bl_idname = "SCENE_PT_batchset"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
     bl_category = '1D'
