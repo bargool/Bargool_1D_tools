@@ -9,13 +9,14 @@ bl_info = {
 }
 
 import bpy
-import batch_set
+from batch_set.settings import BatchOperatorSettings
 
 
 def register():
-    bpy.utils.register_module(batch_set)
+    print(__name__)
+    bpy.utils.register_module(__name__)
     bpy.types.Scene.batch_operator_settings = bpy.props.PointerProperty(
-        type=batch_set.settings.BatchOperatorSettings)
+        type=BatchOperatorSettings)
 
 
 def unregister():
