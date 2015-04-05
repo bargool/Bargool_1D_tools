@@ -10,7 +10,7 @@ class BatchSetPanel(bpy.types.Panel):
     bl_idname = "SCENE_PT_batchset"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
-    # bl_category = '1D'
+    bl_category = '1D'
     bl_options = {'DEFAULT_CLOSED'}
 
     def draw(self, context):
@@ -23,7 +23,7 @@ class BatchSetPanel(bpy.types.Panel):
         ]
         for op in operators:
             row = layout.row(align=True)
-            row.operator(op)
+            layout.operator(op)
 
         layout.separator()
         row = layout.row()

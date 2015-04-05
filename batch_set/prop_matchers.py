@@ -5,7 +5,7 @@ __author__ = 'Aleksey Nakoryakov'
 import bpy
 
 
-class MatchHideRender(bpy.types.Operator):
+class MatchHideRenderOperator(bpy.types.Operator):
     bl_idname = 'object.match_hide_render'
     bl_label = 'MatchHideRender'
     bl_options = {'REGISTER', 'UNDO'}
@@ -20,7 +20,7 @@ class MatchHideRender(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class SelectSameHideRender(bpy.types.Operator):
+class SelectSameHideRenderOperator(bpy.types.Operator):
     bl_idname = 'object.select_same_hide_render'
     bl_label = 'Select Same HideRender'
     bl_options = {'REGISTER', 'UNDO'}
@@ -37,7 +37,7 @@ class SelectSameHideRender(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class IsolateLayers(bpy.types.Operator):
+class IsolateLayersOperator(bpy.types.Operator):
     bl_idname = 'object.isolate_layers'
     bl_label = 'Isolate Layers'
     bl_options = {'REGISTER', 'UNDO'}
@@ -50,7 +50,7 @@ class IsolateLayers(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class MatchDrawType(bpy.types.Operator):
+class MatchDrawTypeOperator(bpy.types.Operator):
     bl_idname = 'object.match_draw_type'
     bl_label = 'Match DrawType'
     bl_options = {'REGISTER', 'UNDO'}

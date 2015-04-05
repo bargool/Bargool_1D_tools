@@ -9,11 +9,12 @@ bl_info = {
 }
 
 import bpy
+from batch_set import selectors, import_cleanup, prop_matchers
+from batch_set import removers, panels
 from batch_set.settings import BatchOperatorSettings
 
 
 def register():
-    print(__name__)
     bpy.utils.register_module(__name__)
     bpy.types.Scene.batch_operator_settings = bpy.props.PointerProperty(
         type=BatchOperatorSettings)

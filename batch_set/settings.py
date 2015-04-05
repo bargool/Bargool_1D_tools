@@ -15,7 +15,8 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
     work_without_selection = bpy.props.BoolProperty(
         name='Work without selection',
         default=False,
-        description='If set, batch erasers will work with all objects without selection')
+        description='If set, batch erasers will'
+                    ' work with all objects without selection')
 
     # We need all subclasses of BaseBatchRemover in one dropdown
     operators = [
