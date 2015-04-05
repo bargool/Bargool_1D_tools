@@ -7,7 +7,7 @@ import bpy
 
 class BaseBatchRemover(object):
     """
-    Base operator for batch processing objects
+    Base mixin for batch processing objects
     Inheritors must override:
         filter_object method to define what objects to process
         process_object method to define what to do with each object

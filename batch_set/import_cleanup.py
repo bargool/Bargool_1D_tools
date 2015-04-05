@@ -6,7 +6,7 @@ import bpy
 
 
 class ImportCleanupOperator(bpy.types.Operator):
-    """ Class by Paul Kotelevets """
+    """ Class by Paul Kotelevets, and my little edits """
     bl_idname = 'mesh.import_cleanup'
     bl_label = 'Obj Import Cleanup'
     bl_options = {'REGISTER', 'UNDO'}
