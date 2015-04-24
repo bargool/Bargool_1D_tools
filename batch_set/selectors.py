@@ -31,16 +31,16 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
                 seldict[(x, y)].append(z)
             else:
                 seldict[(x, y)] = [z, ]
-        Vertex = namedtuple('Vertex', ['x', 'y', 'zmin', 'zmax'])
+        Vertex = namedtuple('Vertex', ['x', 'y', 'zs', 'zmin', 'zmax'])  # zs - list of zeds =)
         result_coords = [
-            Vertex(x=xy[0], y=xy[1], zmin=min(z), zmax=max(z))
+            Vertex(x=xy[0], y=xy[1], zs=z, zmin=min(z), zmax=max(z))
             for xy, z in seldict.items()]
 
         global_limit = context.scene.batch_operator_settings.select_global_limit
         if global_limit:
             zmin = min(x.zmin for x in result_coords)
             zmax = max(x.zmax for x in result_coords)
-            result_coords = [Vertex(x=v.x, y=v.y, zmin=zmin, zmax=zmax)
+            result_coords = [Vertex(x=v.x, y=v.y, zs=v.zs, zmin=zmin, zmax=zmax)
                              for v in result_coords]
         print(result_coords)
         return result_coords
@@ -83,12 +83,20 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
                     and vert.co.z - v.zmax < threshold
                     and v.zmin - vert.co.z < threshold)]
         elif behaviour == 'Z Level':
-            zmin, zmax = min(x.zmin for x in selected), max(
-                x.zmax for x in selected)
-            fitness_func = lambda vert: [
-                v for v in selected
-                if (vert.co.z - zmax < threshold
-                    and zmin - vert.co.z < threshold)]
+            global_limit = context.scene.batch_operator_settings.select_global_limit
+
+            if global_limit:
+                zmin, zmax = min(x.zmin for x in selected), max(
+                    x.zmax for x in selected)
+                fitness_func = lambda vert: [
+                    v for v in selected
+                    if (vert.co.z - zmax < threshold
+                        and zmin - vert.co.z < threshold)]
+            else:
+                selected_z = frozenset([z for v in selected for z in v.zs])
+                fitness_func = lambda vert: [
+                    z for z in selected_z
+                    if z - threshold < vert.co.z < z + threshold]
 
         for vert in bm.verts:
             if not vert.hide and fitness_func(vert):

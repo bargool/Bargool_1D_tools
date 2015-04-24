@@ -4,7 +4,7 @@ bl_info = {
     'name': 'Batch Set',
     'author': 'Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)',
     'category': 'Object',
-    'version': (0, 10, 3),
+    'version': (0, 11, 0),
     'location': 'View3D > Toolbar',
 }
 
