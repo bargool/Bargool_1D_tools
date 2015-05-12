@@ -43,3 +43,10 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
 
     import_cleanup_recalculate_normals = bpy.props.BoolProperty(
         name='Recalculate Normals', default=False)
+
+
+class BatchPanelSettings(bpy.types.PropertyGroup):
+    do_show_select_verticals = bpy.props.BoolProperty(default=False)
+    do_show_remover = bpy.props.BoolProperty(default=False)
+    do_show_cleanup = bpy.props.BoolProperty(default=False)
+    do_show_misc = bpy.props.BoolProperty(default=False)
