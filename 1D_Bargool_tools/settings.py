@@ -3,7 +3,7 @@
 __author__ = 'Aleksey Nakoryakov'
 
 import bpy
-from batch_set.removers import BaseBatchRemover
+from .removers import BatchRemoverMixin
 
 
 def get_description(operator):
@@ -18,10 +18,10 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
         description='If set, batch erasers will'
                     ' work with all objects without selection')
 
-    # We need all subclasses of BaseBatchRemover in one dropdown
+    # We need all subclasses of BatchRemoverMixin in one dropdown
     operators = [
         (op.bl_idname, op.dropdown_name, get_description(op))
-        for op in BaseBatchRemover.__subclasses__()]
+        for op in BatchRemoverMixin.__subclasses__()]
 
     removers_dropdown = bpy.props.EnumProperty(
         items=operators,
@@ -46,7 +46,7 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
 
 
 class BatchPanelSettings(bpy.types.PropertyGroup):
-    do_show_select_verticals = bpy.props.BoolProperty(default=False)
+    do_show_select_vertices = bpy.props.BoolProperty(default=False)
     do_show_remover = bpy.props.BoolProperty(default=False)
     do_show_cleanup = bpy.props.BoolProperty(default=False)
     do_show_misc = bpy.props.BoolProperty(default=False)

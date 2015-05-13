@@ -8,8 +8,8 @@ import bmesh
 
 
 class VerticalVerticesSelectOperator(bpy.types.Operator):
-    bl_idname = 'mesh.select_verticals'
-    bl_label = 'Select verticals'
+    bl_idname = 'mesh.select_vertices'
+    bl_label = 'Select vertices'
     bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod

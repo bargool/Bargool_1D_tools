@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
 bl_info = {
-    'name': '1D-Bargool tools',
+    'name': '1D_Bargool tools',
     'author': 'Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)',
     'category': 'Object',
-    'version': (1, 0, 0),
+    'version': (1, 0, 1),
     'location': 'View3D > Toolbar',
 }
 
 import bpy
-from batch_set import selectors, import_cleanup, prop_matchers
-from batch_set import removers, panels
-from batch_set.settings import BatchOperatorSettings, BatchPanelSettings
+from . import selectors, import_cleanup, prop_matchers
+from . import removers, panels
+from .settings import BatchOperatorSettings, BatchPanelSettings
 
 
 def register():
@@ -23,6 +23,8 @@ def register():
 
 
 def unregister():
+    del bpy.types.Scene.batch_operator_settings
+    del bpy.types.Scene.batch_panel_settings
     bpy.utils.unregister_module(__name__)
 
 

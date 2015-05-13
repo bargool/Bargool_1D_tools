@@ -6,7 +6,7 @@ import bpy
 
 
 class BatchSetPanel(bpy.types.Panel):
-    bl_label = "1D-Bargool Tools"
+    bl_label = "1D_Bargool Tools"
     bl_idname = "SCENE_PT_batchsetpanel"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
@@ -26,16 +26,16 @@ class BatchSetPanel(bpy.types.Panel):
         scene = context.scene
         self.scene = scene
 
-        # Select verticals
+        # Select vertices
         layout.prop(
-            self.props, 'do_show_select_verticals',
+            self.props, 'do_show_select_vertices',
             text='Select vertices',
-            icon=self.get_arrow_icon_name('do_show_select_verticals'),
+            icon=self.get_arrow_icon_name('do_show_select_vertices'),
             )
 
-        if self.props.do_show_select_verticals:
+        if self.props.do_show_select_vertices:
             box = layout.box()
-            box.operator('mesh.select_verticals')
+            box.operator('mesh.select_vertices')
             box.prop(scene.batch_operator_settings,
                         'verticals_select_behaviour',
                         text='Options')
@@ -71,7 +71,7 @@ class BatchSetPanel(bpy.types.Panel):
         # Misc
         layout.prop(self.props,
                     'do_show_misc',
-                    text='Obj Import Cleanup',
+                    text='Misc',
                     icon=self.get_arrow_icon_name('do_show_misc'))
         if self.props.do_show_misc:
             box = layout.box()

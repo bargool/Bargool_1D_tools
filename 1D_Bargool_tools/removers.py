@@ -5,7 +5,7 @@ __author__ = 'Aleksey Nakoryakov'
 import bpy
 
 
-class BaseBatchRemover(object):
+class BatchRemoverMixin(object):
     """
     Base mixin for batch processing objects
     Inheritors must override:
@@ -59,7 +59,7 @@ class BaseBatchRemover(object):
         raise NotImplementedError
 
 
-class BatchUVMapsEraserOperator(BaseBatchRemover, bpy.types.Operator):
+class BatchUVMapsEraserOperator(BatchRemoverMixin, bpy.types.Operator):
     bl_idname = 'object.uvmaps_eraser'
     bl_label = 'UV Maps Batch Remove'
     bl_description = 'Removes UV Maps from selected or all objects in scene'
@@ -79,7 +79,7 @@ class BatchUVMapsEraserOperator(BaseBatchRemover, bpy.types.Operator):
         return count
 
 
-class BatchVertexGroupEraserOperator(BaseBatchRemover, bpy.types.Operator):
+class BatchVertexGroupEraserOperator(BatchRemoverMixin, bpy.types.Operator):
     bl_idname = 'object.vertex_groups_eraser'
     bl_label = 'Vertex Groups Batch Remove'
     bl_description = 'Removes Vertex Groups from ' \
@@ -97,7 +97,7 @@ class BatchVertexGroupEraserOperator(BaseBatchRemover, bpy.types.Operator):
         return 1
 
 
-class BatchShapeKeysEraserOperator(BaseBatchRemover, bpy.types.Operator):
+class BatchShapeKeysEraserOperator(BatchRemoverMixin, bpy.types.Operator):
     bl_idname = 'object.shape_keys_eraser'
     bl_label = 'Shape Keys Batch Remove'
     bl_description = 'Removes Shape Keys from selected or all objects in scene'
@@ -113,7 +113,7 @@ class BatchShapeKeysEraserOperator(BaseBatchRemover, bpy.types.Operator):
         return 1
 
 
-class BatchVertexColorsEraserOperator(BaseBatchRemover, bpy.types.Operator):
+class BatchVertexColorsEraserOperator(BatchRemoverMixin, bpy.types.Operator):
     bl_idname = 'object.vertex_colors_eraser'
     bl_label = 'Vertex Colors Batch Remove'
     bl_description = 'Removes VCols from selected or all objects in scene'
@@ -137,7 +137,7 @@ class BatchVertexColorsEraserOperator(BaseBatchRemover, bpy.types.Operator):
         return count
 
 
-class BatchMaterialEraserOperator(BaseBatchRemover, bpy.types.Operator):
+class BatchMaterialEraserOperator(BatchRemoverMixin, bpy.types.Operator):
     bl_idname = 'object.materials_eraser'
     bl_label = 'Materials Batch Remove'
     bl_description = 'Removes Materials from selected or all objects in scene'
@@ -155,7 +155,7 @@ class BatchMaterialEraserOperator(BaseBatchRemover, bpy.types.Operator):
         return count
 
 
-class BatchGPencilEraserOperator(BaseBatchRemover, bpy.types.Operator):
+class BatchGPencilEraserOperator(BatchRemoverMixin, bpy.types.Operator):
     bl_idname = 'object.gpencil_eraser'
     bl_label = 'GPencil Batch Remove'
     bl_description = 'Removes GPencils from selected or all objects in scene'
@@ -173,7 +173,7 @@ class BatchGPencilEraserOperator(BaseBatchRemover, bpy.types.Operator):
         return count
 
 
-class AllModifiersEraserOperator(BaseBatchRemover, bpy.types.Operator):
+class AllModifiersEraserOperator(BatchRemoverMixin, bpy.types.Operator):
     bl_idname = 'object.all_modifiers_eraser'
     bl_label = 'All Modifiers Batch Remove'
     bl_description = 'Removes All Modifiers from ' \
@@ -192,7 +192,7 @@ class AllModifiersEraserOperator(BaseBatchRemover, bpy.types.Operator):
         return count
 
 
-class AllSubsurfsEraserOperator(BaseBatchRemover, bpy.types.Operator):
+class AllSubsurfsEraserOperator(BatchRemoverMixin, bpy.types.Operator):
     bl_idname = 'object.all_subsurfs_eraser'
     bl_label = 'All Subsurfs Batch Remove'
     bl_description = 'Removes All Subsurfs from selected ' \
@@ -212,7 +212,7 @@ class AllSubsurfsEraserOperator(BaseBatchRemover, bpy.types.Operator):
         return count
 
 
-class ZeroSubsurfsEraserOperator(BaseBatchRemover, bpy.types.Operator):
+class ZeroSubsurfsEraserOperator(BatchRemoverMixin, bpy.types.Operator):
     bl_idname = 'object.zero_subsurfs_eraser'
     bl_label = 'Zero Subsurfs Batch Remove'
     bl_description = 'Removes Subsurfs with view 0 from ' \
