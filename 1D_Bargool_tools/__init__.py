@@ -4,7 +4,7 @@ bl_info = {
     'name': '1D_Bargool tools',
     'author': 'Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)',
     'category': 'Object',
-    'version': (1, 0, 1),
+    'version': (1, 1, 0),
     'location': 'View3D > Toolbar',
 }
 

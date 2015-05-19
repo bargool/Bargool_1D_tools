@@ -42,7 +42,6 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
             zmax = max(x.zmax for x in result_coords)
             result_coords = [Vertex(x=v.x, y=v.y, zs=v.zs, zmin=zmin, zmax=zmax)
                              for v in result_coords]
-        print(result_coords)
         return result_coords
 
     def execute(self, context):
@@ -102,10 +101,14 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
             if not vert.hide and fitness_func(vert):
                 count += 1
                 vert.select = True
+        # Remember previous selection mode. We will restore it later
+        select_mode = context.tool_settings.mesh_select_mode[:]
         # Force blender show selected vertices
         bpy.ops.object.mode_set(mode='OBJECT')
         bpy.ops.object.mode_set(mode='EDIT')
         bpy.ops.mesh.select_mode(type='VERT')
+        # Return to previous select_mode
+        context.tool_settings.mesh_select_mode = select_mode
         message = 'Selected {0} vertices'.format(count)
         self.report({'INFO'}, message)
 
