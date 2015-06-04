@@ -4,8 +4,10 @@ bl_info = {
     'name': '1D_Bargool tools',
     'author': 'Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)',
     'category': 'Object',
-    'version': (1, 1, 0),
+    'version': (1, 1, 1),
     'location': 'View3D > Toolbar',
+    'wiki_url': 'https://github.com/bargool/1D_Bargool_tools',
+    'tracker_url': 'https://github.com/bargool/1D_Bargool_tools/issues'
 }
 
 import bpy
