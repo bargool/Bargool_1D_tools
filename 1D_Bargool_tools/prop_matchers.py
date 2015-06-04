@@ -7,7 +7,7 @@ import bpy
 
 class MatchHideRenderOperator(bpy.types.Operator):
     bl_idname = 'object.match_hide_render'
-    bl_label = 'MatchHideRender'
+    bl_label = 'Match HideRender'
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
