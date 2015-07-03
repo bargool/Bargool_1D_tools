@@ -1,19 +1,24 @@
 # -*- coding: utf-8 -*-
 
 bl_info = {
-    'name': '1D_Bargool tools',
-    'author': 'Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)',
-    'category': 'Object',
-    'version': (1, 1, 1),
-    'location': 'View3D > Toolbar',
-    'wiki_url': 'https://github.com/bargool/1D_Bargool_tools',
-    'tracker_url': 'https://github.com/bargool/1D_Bargool_tools/issues'
+    "name": "Bargool_1D tools",
+    "description": "",
+    "author": "Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)",
+    "category": "Object",
+    "version": (1, 2, 0),
+    "location": "View3D > Toolbar",
+    "wiki_url": "https://github.com/bargool/Bargool_1D_tools",
+    "tracker_url": "https://github.com/bargool/Bargool_1D_tools/issues",
 }
-
 import bpy
-from . import selectors, import_cleanup, prop_matchers
+from . import selectors, import_utils, prop_matchers
 from . import removers, panels
 from .settings import BatchOperatorSettings, BatchPanelSettings
+
+# Reload all modules
+import imp
+for m in [selectors, import_utils, prop_matchers, removers, panels, settings]:
+    imp.reload(m)
 
 
 def register():

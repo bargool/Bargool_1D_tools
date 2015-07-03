@@ -6,7 +6,7 @@ import bpy
 
 
 class BatchSetPanel(bpy.types.Panel):
-    bl_label = "1D_Bargool Tools"
+    bl_label = "Bargool_1D Tools"
     bl_idname = "SCENE_PT_batchsetpanel"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
