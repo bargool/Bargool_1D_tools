@@ -113,3 +113,22 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
         self.report({'INFO'}, message)
 
         return {'FINISHED'}
+
+
+class SelectInstancesOperator(bpy.types.Operator):
+    bl_idname = 'object.select_instances'
+    bl_label = 'Select instances'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        return len(context.selected_objects) > 0
+
+    def execute(self, context):
+        scene = context.scene
+        selected_objects = context.selected_objects
+        mesh_names = set([o.data.name for o in selected_objects])
+        objects_to_select = [obj for obj in scene.objects if obj.data.name in mesh_names]
+        for obj in objects_to_select:
+            obj.select = True
+        return {'FINISHED'}
