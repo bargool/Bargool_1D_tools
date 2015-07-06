@@ -117,7 +117,7 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
 
 class SelectInstancesOperator(bpy.types.Operator):
     bl_idname = 'object.select_instances'
-    bl_label = 'Select instances'
+    bl_label = 'Select Instances'
     bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod

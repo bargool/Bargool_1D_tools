@@ -50,3 +50,4 @@ class BatchPanelSettings(bpy.types.PropertyGroup):
     do_show_remover = bpy.props.BoolProperty(default=False)
     do_show_cleanup = bpy.props.BoolProperty(default=False)
     do_show_misc = bpy.props.BoolProperty(default=False)
+    do_show_instances_placement = bpy.props.BoolProperty(default=False)

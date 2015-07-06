@@ -100,7 +100,7 @@ def read_file(filepath):
 
 class ImportTextAsInstancesOperator(utils.OpenFileHelper, bpy.types.Operator):
     bl_idname = 'object.import_instances'
-    bl_label = 'Import instances'
+    bl_label = 'Place Instances'
     bl_options = {'REGISTER', 'UNDO'}
 
     filter_glob = bpy.props.StringProperty(default="*.txt;",
@@ -122,7 +122,7 @@ class ImportTextAsInstancesOperator(utils.OpenFileHelper, bpy.types.Operator):
 
 class FindInstancesFromText(utils.OpenFileHelper, bpy.types.Operator):
     bl_idname = 'object.find_instances'
-    bl_label = 'Find instances'
+    bl_label = 'Find Snstances'
     bl_options = {'REGISTER', 'UNDO'}
 
     filter_glob = bpy.props.StringProperty(default="*.txt;",

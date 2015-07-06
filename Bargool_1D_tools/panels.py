@@ -21,59 +21,48 @@ class BatchSetPanel(bpy.types.Panel):
         b = getattr(self.props, propname)
         return 'DOWNARROW_HLT' if b else 'RIGHTARROW'
 
+    def do_create_subpanel(self, layout, prop_name, text):
+        layout.prop(
+            self.props, prop_name,
+            text=text,
+            icon=self.get_arrow_icon_name(prop_name),
+            )
+        prop_value = getattr(self.props, prop_name, False)
+        return prop_value
+
     def draw(self, context):
         layout = self.layout
         scene = context.scene
         self.scene = scene
 
         # Select vertices
-        layout.prop(
-            self.props, 'do_show_select_vertices',
-            text='Select vertices',
-            icon=self.get_arrow_icon_name('do_show_select_vertices'),
-            )
-
-        if self.props.do_show_select_vertices:
+        if self.do_create_subpanel(layout, 'do_show_select_vertices', 'Select vertices'):
             box = layout.box()
             box.operator('mesh.select_vertices')
             box.prop(scene.batch_operator_settings,
-                        'verticals_select_behaviour',
-                        text='Options')
+                     'verticals_select_behaviour',
+                     text='Options')
             box.prop(scene.batch_operator_settings,
-                        'select_global_limit')
+                     'select_global_limit')
 
         # Batch remover
-        layout.prop(
-            self.props, 'do_show_remover',
-            text='Batch Remover',
-            icon=self.get_arrow_icon_name('do_show_remover'),
-            )
-
-        if self.props.do_show_remover:
+        if self.do_create_subpanel(layout, 'do_show_remover', 'Batch Remover'):
             box = layout.box()
             box.operator(scene.batch_operator_settings.removers_dropdown,
-                            text='Remove')
+                         text='Remove')
             box.prop(scene.batch_operator_settings, 'removers_dropdown',
-                        text='Action')
+                     text='Action')
             box.prop(scene.batch_operator_settings, 'work_without_selection')
 
         # Object import cleanup
-        layout.prop(self.props,
-                    'do_show_cleanup',
-                    text='Obj Import Cleanup',
-                    icon=self.get_arrow_icon_name('do_show_cleanup'))
-        if self.props.do_show_cleanup:
+        if self.do_create_subpanel(layout, 'do_show_cleanup', 'Obj Import Cleanup'):
             box = layout.box()
             box.operator('mesh.import_cleanup')
             box.prop(scene.batch_operator_settings,
-                        'import_cleanup_recalculate_normals')
+                     'import_cleanup_recalculate_normals')
 
         # Misc
-        layout.prop(self.props,
-                    'do_show_misc',
-                    text='Misc',
-                    icon=self.get_arrow_icon_name('do_show_misc'))
-        if self.props.do_show_misc:
+        if self.do_create_subpanel(layout, 'do_show_misc', 'Misc'):
             box = layout.box()
             operators = [
                 'object.material_slot_assign',
@@ -81,6 +70,17 @@ class BatchSetPanel(bpy.types.Panel):
                 'object.match_draw_type',
                 'object.match_hide_render',
                 'object.select_same_hide_render',
+                ]
+            for op in operators:
+                box.operator(op)
+
+        # Instances Placement
+        if self.do_create_subpanel(layout, 'do_show_instances_placement', 'Instances Placement'):
+            box = layout.box()
+            operators = [
+                'object.import_instances',
+                'object.find_instances',
+                'object.select_instances',
                 ]
             for op in operators:
                 box.operator(op)
