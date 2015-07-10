@@ -61,6 +61,17 @@ class BatchSetPanel(bpy.types.Panel):
             box.prop(scene.batch_operator_settings,
                      'import_cleanup_recalculate_normals')
 
+        # Instances Placement
+        if self.do_create_subpanel(layout, 'do_show_instances_placement', 'Instances Placement'):
+            box = layout.box()
+            operators = [
+                'object.import_instances',
+                'object.find_instances',
+                'object.select_instances',
+                ]
+            for op in operators:
+                box.operator(op)
+
         # Misc
         if self.do_create_subpanel(layout, 'do_show_misc', 'Misc'):
             box = layout.box()
@@ -70,17 +81,6 @@ class BatchSetPanel(bpy.types.Panel):
                 'object.match_draw_type',
                 'object.match_hide_render',
                 'object.select_same_hide_render',
-                ]
-            for op in operators:
-                box.operator(op)
-
-        # Instances Placement
-        if self.do_create_subpanel(layout, 'do_show_instances_placement', 'Instances Placement'):
-            box = layout.box()
-            operators = [
-                'object.import_instances',
-                'object.find_instances',
-                'object.select_instances',
                 ]
             for op in operators:
                 box.operator(op)
