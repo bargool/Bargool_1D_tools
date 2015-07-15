@@ -59,6 +59,8 @@ class BatchSetPanel(bpy.types.Panel):
             box = layout.box()
             box.operator('mesh.import_cleanup')
             box.prop(scene.batch_operator_settings,
+                     'import_cleanup_apply_rotations')
+            box.prop(scene.batch_operator_settings,
                      'import_cleanup_recalculate_normals')
 
         # Instances Placement

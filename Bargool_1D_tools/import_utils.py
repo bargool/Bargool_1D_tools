@@ -7,6 +7,10 @@ import bpy
 from . import utils
 
 
+def is_multiuser(obj):
+    return obj.data.users > 1
+
+
 class ImportCleanupOperator(bpy.types.Operator):
     """ Class by Paul Kotelevets, and my little edits """
     bl_idname = 'mesh.import_cleanup'
@@ -32,6 +36,9 @@ class ImportCleanupOperator(bpy.types.Operator):
             if do_recalculate_normals:
                 bpy.ops.mesh.normals_make_consistent(inside=False)
             bpy.ops.object.mode_set(mode='OBJECT')
+            do_import_cleanup_apply_rotations = settings.import_cleanup_apply_rotations
+            if do_import_cleanup_apply_rotations and not is_multiuser(ob):
+                bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
 
         return {'FINISHED'}
 

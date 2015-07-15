@@ -43,6 +43,8 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
 
     import_cleanup_recalculate_normals = bpy.props.BoolProperty(
         name='Recalculate Normals', default=False)
+    import_cleanup_apply_rotations = bpy.props.BoolProperty(
+        name='Apply rotation', default=True)
 
 
 class BatchPanelSettings(bpy.types.PropertyGroup):
