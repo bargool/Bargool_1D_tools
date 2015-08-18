@@ -93,7 +93,7 @@ class ImportTextAsInstancesOperator(OpenFileHelper, bpy.types.Operator):
 
 class FindInstancesFromText(OpenFileHelper, bpy.types.Operator):
     bl_idname = 'object.find_instances'
-    bl_label = 'Find Snstances'
+    bl_label = 'Find Instances'
     bl_options = {'REGISTER', 'UNDO'}
 
     filter_glob = bpy.props.StringProperty(default="*.txt;",

@@ -22,7 +22,8 @@ class BatchSetPanel(bpy.types.Panel):
         return 'DOWNARROW_HLT' if b else 'RIGHTARROW'
 
     def do_create_subpanel(self, layout, prop_name, text):
-        layout.prop(
+        split = layout.split()
+        split.prop(
             self.props, prop_name,
             text=text,
             icon=self.get_arrow_icon_name(prop_name),
@@ -31,52 +32,59 @@ class BatchSetPanel(bpy.types.Panel):
         return prop_value
 
     def draw(self, context):
-        layout = self.layout
         scene = context.scene
         self.scene = scene
+        layout = self.layout
+        top_col = layout.column(align=True)
 
         # Select vertices
-        if self.do_create_subpanel(layout, 'do_show_select_vertices', 'Select vertices'):
-            box = layout.box()
-            box.operator('mesh.select_vertices')
-            box.prop(scene.batch_operator_settings,
+        if self.do_create_subpanel(top_col, 'do_show_select_vertices', 'Select vertices'):
+            box = top_col.box()
+            col = box.column(align=True)
+            col.operator('mesh.select_vertices')
+            col.prop(scene.batch_operator_settings,
                      'verticals_select_behaviour',
                      text='Options')
-            box.prop(scene.batch_operator_settings,
+            col.prop(scene.batch_operator_settings,
                      'select_global_limit')
 
         # Batch remover
-        if self.do_create_subpanel(layout, 'do_show_remover', 'Batch Remover'):
-            box = layout.box()
-            box.operator(scene.batch_operator_settings.removers_dropdown,
+        if self.do_create_subpanel(top_col, 'do_show_remover', 'Batch Remover'):
+            box = top_col.box()
+            col = box.column(align=True)
+            col.operator(scene.batch_operator_settings.removers_dropdown,
                          text='Remove')
-            box.prop(scene.batch_operator_settings, 'removers_dropdown',
+            col.prop(scene.batch_operator_settings, 'removers_dropdown',
                      text='Action')
-            box.prop(scene.batch_operator_settings, 'work_without_selection')
+            col.prop(scene.batch_operator_settings, 'work_without_selection')
 
         # Object import cleanup
-        if self.do_create_subpanel(layout, 'do_show_cleanup', 'Obj Import Cleanup'):
-            box = layout.box()
-            box.operator('mesh.import_cleanup')
-            box.prop(scene.batch_operator_settings,
+        if self.do_create_subpanel(top_col, 'do_show_cleanup', 'Obj Import Cleanup'):
+            box = top_col.box()
+            col = box.column(align=True)
+            col.operator('mesh.import_cleanup')
+            col.prop(scene.batch_operator_settings,
                      'import_cleanup_apply_rotations')
-            box.prop(scene.batch_operator_settings,
+            col.prop(scene.batch_operator_settings,
                      'import_cleanup_recalculate_normals')
 
         # Instances Placement
-        if self.do_create_subpanel(layout, 'do_show_instances_placement', 'Instances Placement'):
-            box = layout.box()
+        if self.do_create_subpanel(top_col, 'do_show_instances_placement', 'Instances Placement'):
+            box = top_col.box()
+            col = box.column(align=True)
             operators = [
                 'object.import_instances',
                 'object.find_instances',
                 'object.select_instances',
+                'object.drop_instances',
                 ]
             for op in operators:
-                box.operator(op)
+                col.operator(op)
 
         # Misc
-        if self.do_create_subpanel(layout, 'do_show_misc', 'Misc'):
-            box = layout.box()
+        if self.do_create_subpanel(top_col, 'do_show_misc', 'Misc'):
+            box = top_col.box()
+            col = box.column(align=True)
             operators = [
                 'object.material_slot_assign',
                 'object.isolate_layers',
@@ -85,4 +93,4 @@ class BatchSetPanel(bpy.types.Panel):
                 'object.select_same_hide_render',
                 ]
             for op in operators:
-                box.operator(op)
+                col.operator(op)
