@@ -11,6 +11,19 @@ def is_multiuser(obj):
     return obj.data.users > 1
 
 
+def find_instances(obj, context):
+    mesh_name = obj.data.name
+    for o in context.scene.objects:
+        if o.data.name == mesh_name:
+            yield o
+
+
+def create_instance(obj, scene):
+    duplicated = obj.copy()
+    scene.objects.link(duplicated)
+    return duplicated
+
+
 class BlockInstance(object):
     def __init__(self, *args):
         if len(args) == 1:
@@ -73,8 +86,7 @@ class ImportTextAsInstancesOperator(OpenFileHelper, bpy.types.Operator):
             if obj.data.name in instances_dict:
                 instances = instances_dict.pop(obj.data.name)
                 for inst in instances:
-                    duplicated = obj.copy()
-                    scene.objects.link(duplicated)
+                    duplicated = create_instance(obj, scene)
                     inst.modify_obj(duplicated)
         return {'FINISHED'}
 
@@ -100,4 +112,22 @@ class FindInstancesFromText(OpenFileHelper, bpy.types.Operator):
                         obj.select = True
                         d.pop(index)
                         break
+        return {'FINISHED'}
+
+
+class DropInstancesOperator(bpy.types.Operator):
+    bl_idname = 'object.drop_instances'
+    bl_label = 'Drop Instances'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        scene = context.scene
+        acitive_object = context.active_object
+        matrices = [o.matrix_local for o in find_instances(acitive_object, context) if o.name != acitive_object.name]
+        bpy.ops.mesh.separate()
+        separated_object = scene.objects[0]
+        for m in matrices:
+            duplicated = create_instance(separated_object, scene)
+            duplicated.matrix_local = m
+
         return {'FINISHED'}
