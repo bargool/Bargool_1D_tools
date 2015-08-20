@@ -140,20 +140,24 @@ class DropInstancesOperator(bpy.types.Operator):
 class InstancesToCursourOperator(bpy.types.Operator):
     bl_idname = 'object.instances_to_cursor'
     bl_label = 'Instances to cursor'
-    bl_description = 'Creates instances of each selected mesh into cursor position'
+    bl_description = 'Creates instances of each selected multiuser into cursor position'
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
         scene = context.scene
         cursor_location = scene.cursor_location
+        selected_multiuser = [o for o in context.selected_objects if is_multiuser(o)]
+        for o in context.selected_objects:
+            o.select = False
         objects = {}
         # We need only one object of each seleceted mesh
-        for o in context.selected_objects:
+        for o in selected_multiuser:
             if o.data.name not in objects:
                 objects[o.data.name] = o
 
         for v in objects.values():
             duplicated = create_instance(v, scene)
             duplicated.location = cursor_location
+            duplicated.select = True
 
         return {'FINISHED'}
