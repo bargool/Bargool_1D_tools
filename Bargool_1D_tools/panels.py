@@ -77,6 +77,7 @@ class BatchSetPanel(bpy.types.Panel):
                 'object.find_instances',
                 'object.select_instances',
                 'object.drop_instances',
+                'object.instances_to_cursor',
                 ]
             for op in operators:
                 col.operator(op)

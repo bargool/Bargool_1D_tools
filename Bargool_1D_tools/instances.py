@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import bpy
+import collections
 from .utils import check_equality, OpenFileHelper
 
 __author__ = 'alexey.nakoryakov'
@@ -12,6 +13,7 @@ def is_multiuser(obj):
 
 
 def find_instances(obj, context):
+    """ Finds instances of object obj """
     mesh_name = obj.data.name
     for o in context.scene.objects:
         if o.data.name == mesh_name:
@@ -19,14 +21,16 @@ def find_instances(obj, context):
 
 
 def create_instance(obj, scene):
+    """ Creates instance of obj """
     duplicated = obj.copy()
     scene.objects.link(duplicated)
     return duplicated
 
 
 class BlockInstance(object):
+    """ Class for operating with instances read from txt file """
     def __init__(self, *args):
-        if len(args) == 1:
+        if len(args) == 1 and isinstance(args[0], collections.Iterable):
             s = args[0]
             s = s.strip()
             s = s.replace('(', '')
@@ -129,5 +133,27 @@ class DropInstancesOperator(bpy.types.Operator):
         for m in matrices:
             duplicated = create_instance(separated_object, scene)
             duplicated.matrix_local = m
+
+        return {'FINISHED'}
+
+
+class InstancesToCursourOperator(bpy.types.Operator):
+    bl_idname = 'object.instances_to_cursor'
+    bl_label = 'Instances to cursor'
+    bl_description = 'Creates instances of each selected mesh into cursor position'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        scene = context.scene
+        cursor_location = scene.cursor_location
+        objects = {}
+        # We need only one object of each seleceted mesh
+        for o in context.selected_objects:
+            if o.data.name not in objects:
+                objects[o.data.name] = o
+
+        for v in objects.values():
+            duplicated = create_instance(v, scene)
+            duplicated.location = cursor_location
 
         return {'FINISHED'}
