@@ -12,12 +12,12 @@ bl_info = {
 }
 import bpy
 from . import selectors, import_utils, prop_matchers
-from . import removers, panels, instances
+from . import removers, panels, instances, naming
 from .settings import BatchOperatorSettings, BatchPanelSettings
 
 # Reload all modules
 import imp
-for m in [selectors, import_utils, prop_matchers, removers, panels, settings, instances]:
+for m in [selectors, import_utils, prop_matchers, removers, panels, settings, instances, naming]:
     imp.reload(m)
 
 
