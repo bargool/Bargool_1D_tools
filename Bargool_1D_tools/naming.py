@@ -9,8 +9,8 @@ class ObnameToMeshnameOperator(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        obj = context.active_object
-        obj.data.name = obj.name
+        for obj in context.selected_objects:
+            obj.data.name = obj.name
         return {'FINISHED'}
 
 
@@ -20,8 +20,8 @@ class MeshnameToObnameOperator(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        obj = context.active_object
-        obj.name = obj.data.name
+        for obj in context.selected_objects:
+            obj.name = obj.data.name
         return {'FINISHED'}
 
 

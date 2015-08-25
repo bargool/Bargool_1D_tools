@@ -5,7 +5,7 @@ bl_info = {
     "description": "",
     "author": "Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)",
     "category": "Object",
-    "version": (1, 4, 0),
+    "version": (1, 4, 1),
     "location": "View3D > Toolbar",
     "wiki_url": "https://github.com/bargool/Bargool_1D_tools",
     "tracker_url": "https://github.com/bargool/Bargool_1D_tools/issues",
