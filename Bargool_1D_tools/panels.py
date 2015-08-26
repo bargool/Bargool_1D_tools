@@ -97,6 +97,18 @@ class BatchSetPanel(bpy.types.Panel):
             for op in operators:
                 col.operator(op)
 
+        # Links
+        if self.do_create_subpanel(top_col, 'do_show_links', 'Links'):
+            box = top_col.box()
+            col = box.column(align=True)
+            operators = [
+                'object.select_linked',
+                'object.delete_linked',
+            ]
+
+            for op in operators:
+                col.operator(op)
+
         # Misc
         if self.do_create_subpanel(top_col, 'do_show_misc', 'Misc'):
             box = top_col.box()

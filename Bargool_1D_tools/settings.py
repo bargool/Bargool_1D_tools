@@ -54,3 +54,4 @@ class BatchPanelSettings(bpy.types.PropertyGroup):
     do_show_misc = bpy.props.BoolProperty(default=False)
     do_show_instances_placement = bpy.props.BoolProperty(default=False)
     do_show_naming_tools = bpy.props.BoolProperty(default=False)
+    do_show_links = bpy.props.BoolProperty(default=False)
