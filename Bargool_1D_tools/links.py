@@ -14,7 +14,7 @@ def find_same_link(scene, obj):
 
 
 class SelectLinkedOperator(bpy.types.Operator):
-    bl_idname = 'object.select_linked'
+    bl_idname = 'object.select_linked_objects'
     bl_label = 'Select Linked objects'
     bl_options = {'REGISTER', 'UNDO'}
 
@@ -31,7 +31,7 @@ class SelectLinkedOperator(bpy.types.Operator):
 
 
 class DetachLinked(bpy.types.Operator):
-    bl_idname = 'object.delete_linked'
+    bl_idname = 'object.delete_linked_object'
     bl_label = 'Delete Linked objects'
     bl_options = {'REGISTER', 'UNDO'}
 
