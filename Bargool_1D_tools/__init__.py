@@ -5,19 +5,19 @@ bl_info = {
     "description": "",
     "author": "Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)",
     "category": "Object",
-    "version": (1, 4, 10),
+    "version": (1, 4, 11),
     "location": "View3D > Toolbar",
     "wiki_url": "https://github.com/bargool/Bargool_1D_tools",
     "tracker_url": "https://github.com/bargool/Bargool_1D_tools/issues",
 }
 import bpy
 from . import selectors, import_utils, prop_matchers
-from . import removers, panels, instances, naming, links
+from . import removers, panels, instances, naming
 from .settings import BatchOperatorSettings, BatchPanelSettings
 
 # Reload all modules
 import imp
-for m in [selectors, import_utils, prop_matchers, removers, panels, settings, instances, naming, links]:
+for m in [selectors, import_utils, prop_matchers, removers, panels, settings, instances, naming]:
     imp.reload(m)
 
 
