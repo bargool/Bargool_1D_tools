@@ -5,7 +5,7 @@ bl_info = {
     "description": "",
     "author": "Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)",
     "category": "Object",
-    "version": (1, 4, 11),
+    "version": (1, 4, 12),
     "location": "View3D > Toolbar",
     "wiki_url": "https://github.com/bargool/Bargool_1D_tools",
     "tracker_url": "https://github.com/bargool/Bargool_1D_tools/issues",
@@ -23,6 +23,7 @@ for m in [selectors, import_utils, prop_matchers, removers, panels, settings, in
 
 def register():
     bpy.utils.register_module(__name__)
+    naming.register_this()
     bpy.types.Scene.batch_operator_settings = bpy.props.PointerProperty(
         type=BatchOperatorSettings)
     bpy.types.Scene.batch_panel_settings = bpy.props.PointerProperty(

@@ -3,6 +3,7 @@
 __author__ = 'Aleksey Nakoryakov'
 
 import bpy
+from . import naming
 
 
 class BatchSetPanel(bpy.types.Panel):
@@ -90,8 +91,11 @@ class BatchSetPanel(bpy.types.Panel):
                 'object.obname_to_meshname',
                 'object.meshname_to_obname',
                 'object.distribute_obname',
-                'object.add_as_prefix',
+                'object.add_as_ob_prefix',
                 'object.remove_prefix',
+                'object.find_ob_name',
+                'mesh.find_mesh_name',
+                naming.SelectObNameEqualsMeshNameOperator.bl_idname,
             ]
 
             for op in operators:
