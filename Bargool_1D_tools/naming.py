@@ -17,6 +17,7 @@ def remove_suffix(s):
 class ObnameToMeshnameOperator(utils.BatchOperatorMixin, bpy.types.Operator):
     bl_idname = 'object.obname_to_meshname'
     bl_label = 'Obname To Meshname'
+    bl_description = 'Assigns object name to its meshname. Works with all selected objects'
 
     def process_object(self, obj):
         obj.data.name = obj.name
@@ -25,12 +26,14 @@ class ObnameToMeshnameOperator(utils.BatchOperatorMixin, bpy.types.Operator):
 class MeshnameToObnameOperator(utils.BatchOperatorMixin, bpy.types.Operator):
     bl_idname = 'object.meshname_to_obname'
     bl_label = 'Meshname To Obname'
+    bl_description = 'Assigns meshname to object name. Works with all selected objects'
 
     def process_object(self, obj):
         obj.name = obj.data.name
 
 
 class ActiveNameMixin(utils.BatchOperatorMixin):
+    """ Mixin to for with name of active object """
     def pre_process_objects(self):
         self.obname = self.context.active_object.name
 
@@ -107,7 +110,7 @@ class FindMeshNameOperator(utils.ObjectsSelectorMixin, bpy.types.Operator):
 
 class SelectObNameEqualsMeshNameOperator(utils.BatchOperatorMixin, bpy.types.Operator):
     bl_idname = 'object.select_obname_equals_meshname'
-    bl_label = 'Select ObName equals MeshName'
+    bl_label = 'Select ObName == MeshName'
 
     use_selected_objects = False
 
