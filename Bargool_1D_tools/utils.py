@@ -62,7 +62,7 @@ class BatchOperatorMixin(object):
     def execute(self, context):
         """
         Template method pattern
-        Must override filter_object and process_object
+        Must override filter_object, process_object and pre_process_objects
         """
         self.context = context
         # Select and filter objects
@@ -82,25 +82,22 @@ class BatchOperatorMixin(object):
             # Fight!
             self.process_object(obj)
         bpy.context.scene.objects.active = old_active
+        self.post_process_objects()
         return {'FINISHED'}
 
     def filter_object(self, obj):
         return True
 
     def process_object(self, obj):
-        pass
+        raise NotImplementedError
 
     def pre_process_objects(self):
         pass
 
+    def post_process_objects(self):
+        pass
 
-def batch_operator_factory(operator_name, name, filter_func=None, process_func=None, use_selected_objects=True):
-    bl_idname = '.'.join(('object', slugify(name)))
-    d = {'bl_label': name,
-         'bl_idname': bl_idname,
-         'use_selected_objects': use_selected_objects, }
-    if filter_func:
-        d['filter_object'] = filter_func
-    if process_func:
-        d['process_object'] = process_func
-    return type(operator_name, (BatchOperatorMixin, bpy.types.Operator), d)
+
+class ObjectsSelectorMixin(BatchOperatorMixin):
+    def process_object(self, obj):
+        obj.select = True

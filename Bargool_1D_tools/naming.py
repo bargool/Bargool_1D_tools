@@ -14,126 +14,122 @@ def remove_suffix(s):
     return part[0] or part[-1]
 
 
-class MeshnameToObnameOperator(bpy.types.Operator):
+class ObnameToMeshnameOperator(utils.BatchOperatorMixin, bpy.types.Operator):
+    bl_idname = 'object.obname_to_meshname'
+    bl_label = 'Obname To Meshname'
+
+    def process_object(self, obj):
+        obj.data.name = obj.name
+
+
+class MeshnameToObnameOperator(utils.BatchOperatorMixin, bpy.types.Operator):
     bl_idname = 'object.meshname_to_obname'
     bl_label = 'Meshname To Obname'
-    bl_options = {'REGISTER', 'UNDO'}
 
-    def execute(self, context):
-        for obj in context.selected_objects:
-            obj.name = obj.data.name
-        return {'FINISHED'}
+    def process_object(self, obj):
+        obj.name = obj.data.name
 
 
-class DistributeObnameOperator(bpy.types.Operator):
+class ActiveNameMixin(utils.BatchOperatorMixin):
+    def pre_process_objects(self):
+        self.obname = self.context.active_object.name
+
+    def filter_object(self, obj):
+        return obj.name != self.obname
+
+
+class DistributeObnameOperator(ActiveNameMixin, bpy.types.Operator):
     bl_idname = 'object.distribute_obname'
     bl_label = 'Distribute Obname'
-    bl_options = {'REGISTER', 'UNDO'}
 
-    def execute(self, context):
-        obj = context.active_object
-        name = obj.name
-        selected_objects = [o for o in context.selected_objects if o.name != name]
-        for o in selected_objects:
-            o.name = name
-        obj.name = name
+    def process_object(self, obj):
+        obj.name = self.obname
 
-        return {'FINISHED'}
+    def post_process_objects(self):
+        self.context.active_object.name = self.obname
 
 
-class AddAsObPrefixOperator(bpy.types.Operator):
+class AddAsObPrefixOperator(ActiveNameMixin, bpy.types.Operator):
     bl_idname = 'object.add_as_ob_prefix'
     bl_label = 'Add As ObPrefix'
-    bl_options = {'REGISTER', 'UNDO'}
 
-    def execute(self, context):
-        obj = context.active_object
-        name = obj.name
-        selected_objects = [o for o in context.selected_objects if o.name != name]
-        for o in selected_objects:
-            o.name = '_'.join((name, o.name))
-        return {'FINISHED'}
+    def process_object(self, obj):
+        obj.name = '_'.join((self.obname, obj.name))
 
 
-class RemoveObPrefixOperator(bpy.types.Operator):
+class RemoveObPrefixOperator(utils.BatchOperatorMixin, bpy.types.Operator):
     bl_idname = 'object.remove_obprefix'
     bl_label = 'Remove ObPrefix'
-    bl_options = {'REGISTER', 'UNDO'}
 
-    def execute(self, context):
-        for o in context.selected_objects:
-            o.name = remove_prefix(o.name)
-
-        return {'FINISHED'}
+    def process_object(self, obj):
+        obj.name = remove_prefix(obj.name)
 
 
-class FindObNameOperator(bpy.types.Operator):
+class AddAsObSuffixOpperator(ActiveNameMixin, bpy.types.Operator):
+    bl_idname = 'object.add_as_obsuffix'
+    bl_label = 'Add As ObSuffix'
+
+    def process_object(self, obj):
+        obj.name = '_'.join((obj.name, self.obname))
+
+
+class RemoveObSuffixOperator(utils.BatchOperatorMixin, bpy.types.Operator):
+    bl_idname = 'object.remove_obsuffix'
+    bl_label = 'Remove ObSuffix'
+
+    def process_object(self, obj):
+        obj.name = remove_suffix(obj.name)
+
+
+class FindObNameOperator(utils.ObjectsSelectorMixin, bpy.types.Operator):
     bl_idname = 'object.find_ob_name'
     bl_label = 'Find ObName'
-    bl_options = {'REGISTER', 'UNDO'}
+    use_selected_objects = False
 
-    def execute(self, context):
-        search_string = context.active_object.name.lower()
-        objects = [o for o in context.scene.objects if not o.hide and search_string in o.name.lower()]
-        for o in objects:
-            o.select = True
-        return {'FINISHED'}
+    def pre_process_objects(self):
+        self.search_string = self.context.active_object.name.lower()
+
+    def filter_object(self, obj):
+        return not obj.hide and self.search_string in obj.name.lower()
 
 
-class FindMeshNameOperator(bpy.types.Operator):
+class FindMeshNameOperator(utils.ObjectsSelectorMixin, bpy.types.Operator):
     bl_idname = 'mesh.find_mesh_name'
     bl_label = 'Find MeshName'
-    bl_options = {'REGISTER', 'UNDO'}
+    use_selected_objects = False
 
-    def execute(self, context):
-        search_string = context.active_object.data.name.lower()
-        objects = [o for o in context.scene.objects if not o.hide and search_string in o.data.name.lower()]
-        for o in objects:
-            o.select = True
-        return {'FINISHED'}
+    def pre_process_objects(self):
+        self.search_string = self.context.active_object.data.name.lower()
 
-
-def select_object(o, obj):
-    obj.select = True
+    def filter_object(self, obj):
+        return not obj.hide and self.search_string in obj.data.name.lower()
 
 
-def obname_to_meshname(o, obj):
-    obj.data.name = obj.name
+class SelectObNameEqualsMeshNameOperator(utils.BatchOperatorMixin, bpy.types.Operator):
+    bl_idname = 'object.select_obname_equals_meshname'
+    bl_label = 'Select ObName equals MeshName'
 
+    use_selected_objects = False
 
-ObnameToMeshnameOperator = utils.batch_operator_factory(
-    "ObnameToMeshnameOperator", "Obname To Meshname",
-    process_func=obname_to_meshname,
-    use_selected_objects=True
-)
+    def filter_object(self, obj):
+        return obj.name == obj.data.name
 
-SelectObNameEqualsMeshNameOperator = utils.batch_operator_factory(
-    "SelectObNameEqualsMeshNameOperator", "Select ObName equals MeshName", lambda o, x: x.name == x.data.name,
-    select_object,
-    use_selected_objects=False,
-    )
-
-
-def register_module():
-    classes = [
-        ObnameToMeshnameOperator,
-        SelectObNameEqualsMeshNameOperator,
-    ]
-    for klass in classes:
-        bpy.utils.register_class(klass)
+    def process_object(self, obj):
+        obj.select = True
 
 
 def create_panel(col):
     operators = [
-        ObnameToMeshnameOperator.bl_idname,
+        'object.obname_to_meshname',
         'object.meshname_to_obname',
         'object.distribute_obname',
         'object.add_as_ob_prefix',
         'object.remove_obprefix',
+        'object.add_as_obsuffix',
+        'object.remove_obsuffix'
         'object.find_ob_name',
         'mesh.find_mesh_name',
-        SelectObNameEqualsMeshNameOperator.bl_idname,
+        'object.select_obname_equals_meshname',
         ]
-
     for op in operators:
         col.operator(op)
