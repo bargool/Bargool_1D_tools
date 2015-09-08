@@ -23,7 +23,7 @@ for m in [selectors, import_utils, prop_matchers, removers, panels, settings, in
 
 def register():
     bpy.utils.register_module(__name__)
-    naming.register_this()
+    naming.register_module()
     bpy.types.Scene.batch_operator_settings = bpy.props.PointerProperty(
         type=BatchOperatorSettings)
     bpy.types.Scene.batch_panel_settings = bpy.props.PointerProperty(

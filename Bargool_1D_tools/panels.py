@@ -87,19 +87,7 @@ class BatchSetPanel(bpy.types.Panel):
         if self.do_create_subpanel(top_col, 'do_show_naming_tools', 'Naming Tools'):
             box = top_col.box()
             col = box.column(align=True)
-            operators = [
-                'object.obname_to_meshname',
-                'object.meshname_to_obname',
-                'object.distribute_obname',
-                'object.add_as_ob_prefix',
-                'object.remove_prefix',
-                'object.find_ob_name',
-                'mesh.find_mesh_name',
-                naming.SelectObNameEqualsMeshNameOperator.bl_idname,
-            ]
-
-            for op in operators:
-                col.operator(op)
+            naming.create_panel(col)
 
         # Misc
         if self.do_create_subpanel(top_col, 'do_show_misc', 'Misc'):

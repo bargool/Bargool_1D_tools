@@ -4,15 +4,14 @@ import bpy
 from . import utils
 
 
-class ObnameToMeshnameOperator(bpy.types.Operator):
-    bl_idname = 'object.obname_to_meshname'
-    bl_label = 'Obname To Meshname'
-    bl_options = {'REGISTER', 'UNDO'}
+def remove_prefix(s):
+    part = s.partition('_')
+    return part[-1] or part[0]
 
-    def execute(self, context):
-        for obj in context.selected_objects:
-            obj.data.name = obj.name
-        return {'FINISHED'}
+
+def remove_suffix(s):
+    part = s.rpartition('_')
+    return part[0] or part[-1]
 
 
 class MeshnameToObnameOperator(bpy.types.Operator):
@@ -56,15 +55,14 @@ class AddAsObPrefixOperator(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class RemovePrefixOperator(bpy.types.Operator):
-    bl_idname = 'object.remove_prefix'
-    bl_label = 'Remove Prefix'
+class RemoveObPrefixOperator(bpy.types.Operator):
+    bl_idname = 'object.remove_obprefix'
+    bl_label = 'Remove ObPrefix'
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
         for o in context.selected_objects:
-            part = o.name.partition('_')
-            o.name = part[-1] or part[0]
+            o.name = remove_prefix(o.name)
 
         return {'FINISHED'}
 
@@ -95,26 +93,47 @@ class FindMeshNameOperator(bpy.types.Operator):
         return {'FINISHED'}
 
 
-def sel_obj(o, obj):
+def select_object(o, obj):
     obj.select = True
+
+
+def obname_to_meshname(o, obj):
+    obj.data.name = obj.name
+
+
+ObnameToMeshnameOperator = utils.batch_operator_factory(
+    "ObnameToMeshnameOperator", "Obname To Meshname",
+    process_func=obname_to_meshname,
+    use_selected_objects=True
+)
 
 SelectObNameEqualsMeshNameOperator = utils.batch_operator_factory(
     "SelectObNameEqualsMeshNameOperator", "Select ObName equals MeshName", lambda o, x: x.name == x.data.name,
-    sel_obj,
+    select_object,
     use_selected_objects=False,
-)
+    )
 
 
-def register_this():
-    bpy.utils.register_class(SelectObNameEqualsMeshNameOperator)
-# class SelectObNameEqualsMeshNameOperator(utils.OperatorTemplateMixin, bpy.types.Operator):
-#     # bl_idname = 'object.select_obname_eq_meshname'
-#     bl_label = 'Select ObName == MeshName'
-#     # bl_options = {'REGISTER', 'UNDO'}
-#
-#     def execute(self, context):
-#         drop_selection(context.scene)
-#         objects = [o for o in context.scene.objects if o.name == o.data.name]
-#         for o in objects:
-#             o.select = True
-#         return {'FINISHED'}
+def register_module():
+    classes = [
+        ObnameToMeshnameOperator,
+        SelectObNameEqualsMeshNameOperator,
+    ]
+    for klass in classes:
+        bpy.utils.register_class(klass)
+
+
+def create_panel(col):
+    operators = [
+        ObnameToMeshnameOperator.bl_idname,
+        'object.meshname_to_obname',
+        'object.distribute_obname',
+        'object.add_as_ob_prefix',
+        'object.remove_obprefix',
+        'object.find_ob_name',
+        'mesh.find_mesh_name',
+        SelectObNameEqualsMeshNameOperator.bl_idname,
+        ]
+
+    for op in operators:
+        col.operator(op)
