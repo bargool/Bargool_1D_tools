@@ -84,6 +84,61 @@ class RemoveObSuffixOperator(utils.BatchOperatorMixin, bpy.types.Operator):
         obj.name = remove_suffix(obj.name)
 
 
+class ActiveMeshNameMixin(object):
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def filter_meshes(self, obj):
+        return obj.data.name != self.meshname
+
+    def execute(self, context):
+        self.meshname = context.active_object.data.name
+        mesh_names = set([o.data.name for o in context.selected_objects if self.filter_meshes(o)])
+        for mn in mesh_names:
+            self.process(mn)
+        return {'FINISHED'}
+
+    def process(self, meshname):
+        raise NotImplementedError
+
+
+class AddAsMeshPrefixOperator(ActiveMeshNameMixin, bpy.types.Operator):
+    bl_idname = 'object.add_as_mesh_prefix'
+    bl_label = 'Add As Mesh Prefix'
+
+    def process(self, meshname):
+        bpy.data.meshes[meshname].name = '_'.join((self.meshname, bpy.data.meshes[meshname].name))
+
+
+class RemoveMeshPrefixOperator(ActiveMeshNameMixin, bpy.types.Operator):
+    bl_idname = 'object.remove_meshname_prefix'
+    bl_label = 'Remove Meshname Prefix'
+
+    def filter_meshes(self, obj):
+        return True
+
+    def process(self, meshname):
+        bpy.data.meshes[meshname].name = remove_prefix(meshname)
+
+
+class AddAsMeshSuffixOperator(ActiveMeshNameMixin, bpy.types.Operator):
+    bl_idname = 'object.add_as_mesh_suffix'
+    bl_label = 'Add As Mesh Suffix'
+
+    def process(self, meshname):
+        bpy.data.meshes[meshname].name = '_'.join((bpy.data.meshes[meshname].name, self.meshname))
+
+
+class RemoveMeshSuffixOperator(ActiveMeshNameMixin, bpy.types.Operator):
+    bl_idname = 'object.remove_meshname_suffix'
+    bl_label = 'Remove Meshname Suffix'
+
+    def filter_meshes(self, obj):
+        return True
+
+    def process(self, meshname):
+        bpy.data.meshes[meshname].name = remove_suffix(meshname)
+
+
 class FindObNameOperator(utils.ObjectsSelectorMixin, bpy.types.Operator):
     bl_idname = 'object.find_ob_name'
     bl_label = 'Find ObName'
@@ -129,7 +184,11 @@ def create_panel(col):
         'object.add_as_ob_prefix',
         'object.remove_obprefix',
         'object.add_as_obsuffix',
-        'object.remove_obsuffix'
+        'object.remove_obsuffix',
+        'object.add_as_mesh_prefix',
+        'object.remove_meshname_prefix',
+        'object.add_as_mesh_suffix',
+        'object.remove_meshname_suffix',
         'object.find_ob_name',
         'mesh.find_mesh_name',
         'object.select_obname_equals_meshname',
