@@ -5,6 +5,7 @@ __author__ = 'Aleksey Nakoryakov'
 from collections import namedtuple
 import bpy
 import bmesh
+from . import utils
 
 
 class VerticalVerticesSelectOperator(bpy.types.Operator):
@@ -132,3 +133,14 @@ class SelectInstancesOperator(bpy.types.Operator):
         for obj in objects_to_select:
             obj.select = True
         return {'FINISHED'}
+
+
+class DeselectInstancesOperator(utils.BatchOperatorMixin, bpy.types.Operator):
+    bl_idname = 'object.deselect_instances'
+    bl_label = 'Deselect Instances'
+
+    def filter_object(self, obj):
+        return obj.data.users > 1
+
+    def process_object(self, obj):
+        obj.select = False

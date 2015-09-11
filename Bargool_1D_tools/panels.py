@@ -77,6 +77,7 @@ class BatchSetPanel(bpy.types.Panel):
                 'object.import_instances',
                 'object.find_instances',
                 'object.select_instances',
+                'object.deselect_instances',
                 'object.drop_instances',
                 'object.instances_to_cursor',
                 ]
