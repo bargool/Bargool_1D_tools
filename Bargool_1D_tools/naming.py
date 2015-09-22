@@ -232,6 +232,26 @@ class RemoveVerticesCountPrefixOperator(utils.BatchOperatorMixin, bpy.types.Oper
         obj.name = part[-1] or part[0]
 
 
+class FixUtfNamesOperator(utils.BatchOperatorMixin, bpy.types.Operator):
+    bl_idname = 'object.fix_utf_names'
+    bl_label = 'Fix UTF names'
+
+    use_selected_objects = False
+
+    error_name = "++"
+
+    def process_object(self, obj):
+        try:
+            name = obj.name
+            name = obj.data.name
+        except UnicodeDecodeError:
+            obj.name = self.error_name
+            obj.data.name = self.error_name
+            obj.select = True
+        else:
+            obj.select = False
+
+
 def create_panel(col):
     operators = [
         'object.obname_to_meshname',
@@ -251,6 +271,7 @@ def create_panel(col):
         'object.vertices_count_to_name',
         'object.vertices_count_to_name_reverse',
         'object.remove_vertices_count_prefix',
+        'object.fix_utf_names',
     ]
     for op in operators:
         col.operator(op)
