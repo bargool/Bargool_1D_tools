@@ -216,7 +216,7 @@ class VerticesCountToNameReverseOperator(VerticesCountToNameMixin, bpy.types.Ope
     def generate_name(self, obj):
         name = obj.name
         vert_count = len(obj.data.vertices)
-        new_name = "={}{:.1f}={}=={}".format(self.get_index_char(obj), vert_count, self.calculate_factor(obj), name)
+        new_name = "={}{}={:.1f}=={}".format(self.get_index_char(obj), vert_count, self.calculate_factor(obj), name)
         return new_name
 
 
