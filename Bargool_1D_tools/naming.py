@@ -177,7 +177,7 @@ class SelectObNameEqualsMeshNameOperator(utils.BatchOperatorMixin, bpy.types.Ope
         obj.select = True
 
 
-class VerticesCountToNameOperator(utils.BatchOperatorMixin, bpy.types.Operator):
+class VerticesCountToNameMixin(utils.BatchOperatorMixin):
     bl_idname = 'object.vertices_count_to_name'
     bl_label = 'Vertices Count as ob prefix'
 
@@ -191,15 +191,33 @@ class VerticesCountToNameOperator(utils.BatchOperatorMixin, bpy.types.Operator):
     def filter_object(self, obj):
         data = obj.data
         return hasattr(data, 'vertices')
-    # def pre_process_objects(self):
-    #     max_vertices = max([len(o.data.vertices) for o in self.work_objects])
-    #     self.max_digits = len(str(max_vertices))
 
-    def process_object(self, obj):
+    def calculate_factor(self, obj):
+        return int((obj.dimensions[0] + obj.dimensions[1] + obj.dimensions[2]) / 3)
+
+    def generate_name(self, obj):
         name = obj.name
         vert_count = len(obj.data.vertices)
-        new_name = "={}={}=={}".format(self.get_index_char(obj), vert_count, name)
-        obj.name = new_name
+        new_name = "={}{}={}=={}".format(self.get_index_char(obj), self.calculate_factor(obj), vert_count, name)
+        return new_name
+
+    def process_object(self, obj):
+        obj.name = self.generate_name(obj)
+
+
+class VerticesCountToNameOperator(VerticesCountToNameMixin, bpy.types.Operator):
+    pass
+
+
+class VerticesCountToNameReverseOperator(VerticesCountToNameMixin, bpy.types.Operator):
+    bl_idname = 'object.vertices_count_to_name_reverse'
+    bl_label = 'Vertices Count as ob prefix Rev'
+
+    def generate_name(self, obj):
+        name = obj.name
+        vert_count = len(obj.data.vertices)
+        new_name = "={}{}={}=={}".format(self.get_index_char(obj), vert_count, self.calculate_factor(obj), name)
+        return new_name
 
 
 class RemoveVerticesCountPrefixOperator(utils.BatchOperatorMixin, bpy.types.Operator):
@@ -231,6 +249,7 @@ def create_panel(col):
         'mesh.find_mesh_name',
         'object.select_obname_equals_meshname',
         'object.vertices_count_to_name',
+        'object.vertices_count_to_name_reverse',
         'object.remove_vertices_count_prefix',
     ]
     for op in operators:
