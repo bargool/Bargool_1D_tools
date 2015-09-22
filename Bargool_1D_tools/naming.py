@@ -220,6 +220,17 @@ class VerticesCountToNameReverseOperator(VerticesCountToNameMixin, bpy.types.Ope
         return new_name
 
 
+class VerticesFactorToPrefixOperator(VerticesCountToNameMixin, bpy.types.Operator):
+    bl_idname = 'object.vertices_factor_to_prefix'
+    bl_label = 'Vertices Factor as ob prefix'
+
+    def generate_name(self, obj):
+        name = obj.name
+        vert_count = len(obj.data.vertices)
+        factor = vert_count / (self.calculate_factor(obj) + 0.1) # 0.1 - is just to prevent division by zero
+        return '={}-{}=={}'.format(self.get_index_char(obj), factor, name)
+
+
 class RemoveVerticesCountPrefixOperator(utils.BatchOperatorMixin, bpy.types.Operator):
     bl_idname = 'object.remove_vertices_count_prefix'
     bl_label = 'Remove Vertices Count Prefix'
@@ -270,6 +281,7 @@ def create_panel(col):
         'object.select_obname_equals_meshname',
         'object.vertices_count_to_name',
         'object.vertices_count_to_name_reverse',
+        'object.vertices_factor_to_prefix',
         'object.remove_vertices_count_prefix',
         'object.fix_utf_names',
     ]
