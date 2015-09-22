@@ -177,28 +177,31 @@ class SelectObNameEqualsMeshNameOperator(utils.BatchOperatorMixin, bpy.types.Ope
         obj.select = True
 
 
+def get_char_delta(digits):
+    char_code = ord('A') + digits
+    return chr(char_code)
+
+
 class VerticesCountToNameMixin(utils.BatchOperatorMixin):
-    bl_idname = 'object.vertices_count_to_name'
-    bl_label = 'Vertices Count as ob prefix'
-
-    def get_index_char(self, obj):
-        vertices = len(obj.data.vertices)
-        digits = len(str(vertices))
-        # delta = self.max_digits - digits
-        char_code = ord('A') + digits
-        return chr(char_code)
-
     def filter_object(self, obj):
         data = obj.data
         return hasattr(data, 'vertices')
 
-    def calculate_factor(self, obj):
+    def get_index_char(self, obj):
+        vertices = len(obj.data.vertices)
+        digits = len(str(vertices))
+        return get_char_delta(digits)
+
+    def calculate_dimensions_factor(self, obj):
         return (obj.dimensions[0] + obj.dimensions[1] + obj.dimensions[2]) / 3.0
 
     def generate_name(self, obj):
         name = obj.name
         vert_count = len(obj.data.vertices)
-        new_name = "={}{:.1f}={}=={}".format(self.get_index_char(obj), self.calculate_factor(obj), vert_count, name)
+        new_name = "={}{:.1f}={}=={}".format(self.get_index_char(obj),
+                                             self.calculate_dimensions_factor(obj),
+                                             vert_count,
+                                             name)
         return new_name
 
     def process_object(self, obj):
@@ -206,7 +209,8 @@ class VerticesCountToNameMixin(utils.BatchOperatorMixin):
 
 
 class VerticesCountToNameOperator(VerticesCountToNameMixin, bpy.types.Operator):
-    pass
+    bl_idname = 'object.vertices_count_to_name'
+    bl_label = 'Vertices Count as ob prefix'
 
 
 class VerticesCountToNameReverseOperator(VerticesCountToNameMixin, bpy.types.Operator):
@@ -216,7 +220,7 @@ class VerticesCountToNameReverseOperator(VerticesCountToNameMixin, bpy.types.Ope
     def generate_name(self, obj):
         name = obj.name
         vert_count = len(obj.data.vertices)
-        new_name = "={}{}={:.1f}=={}".format(self.get_index_char(obj), vert_count, self.calculate_factor(obj), name)
+        new_name = "={}{}={:.1f}=={}".format(self.get_index_char(obj), vert_count, self.calculate_dimensions_factor(obj), name)
         return new_name
 
 
@@ -224,11 +228,16 @@ class VerticesFactorToPrefixOperator(VerticesCountToNameMixin, bpy.types.Operato
     bl_idname = 'object.vertices_factor_to_prefix'
     bl_label = 'Vertices Factor as ob prefix'
 
+    def get_index_char(self, obj):
+        vert_count = len(obj.data.vertices)
+        factor = vert_count / (self.calculate_dimensions_factor(obj) + 0.1) # 0.1 - is just to prevent division by zero
+        return get_char_delta(int(factor))
+
     def generate_name(self, obj):
         name = obj.name
         vert_count = len(obj.data.vertices)
-        factor = vert_count / (self.calculate_factor(obj) + 0.1) # 0.1 - is just to prevent division by zero
-        return '={}-{}=={}'.format(self.get_index_char(obj), factor, name)
+        factor = vert_count / (self.calculate_dimensions_factor(obj) + 0.1) # 0.1 - is just to prevent division by zero
+        return '={}-{:.1f}=={}'.format(self.get_index_char(obj), factor, name)
 
 
 class RemoveVerticesCountPrefixOperator(utils.BatchOperatorMixin, bpy.types.Operator):
