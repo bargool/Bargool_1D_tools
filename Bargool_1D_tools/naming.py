@@ -193,12 +193,12 @@ class VerticesCountToNameMixin(utils.BatchOperatorMixin):
         return hasattr(data, 'vertices')
 
     def calculate_factor(self, obj):
-        return int((obj.dimensions[0] + obj.dimensions[1] + obj.dimensions[2]) / 3)
+        return (obj.dimensions[0] + obj.dimensions[1] + obj.dimensions[2]) / 3.0
 
     def generate_name(self, obj):
         name = obj.name
         vert_count = len(obj.data.vertices)
-        new_name = "={}{}={}=={}".format(self.get_index_char(obj), self.calculate_factor(obj), vert_count, name)
+        new_name = "={}{:.1f}={}=={}".format(self.get_index_char(obj), self.calculate_factor(obj), vert_count, name)
         return new_name
 
     def process_object(self, obj):
@@ -216,7 +216,7 @@ class VerticesCountToNameReverseOperator(VerticesCountToNameMixin, bpy.types.Ope
     def generate_name(self, obj):
         name = obj.name
         vert_count = len(obj.data.vertices)
-        new_name = "={}{}={}=={}".format(self.get_index_char(obj), vert_count, self.calculate_factor(obj), name)
+        new_name = "={}{:.1f}={}=={}".format(self.get_index_char(obj), vert_count, self.calculate_factor(obj), name)
         return new_name
 
 
