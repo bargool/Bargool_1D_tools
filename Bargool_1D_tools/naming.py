@@ -185,7 +185,7 @@ class VerticesCountToNameOperator(utils.BatchOperatorMixin, bpy.types.Operator):
         vertices = len(obj.data.vertices)
         digits = len(str(vertices))
         # delta = self.max_digits - digits
-        char_code = ord('Z') - digits
+        char_code = ord('A') + digits
         return chr(char_code)
 
     def filter_object(self, obj):
