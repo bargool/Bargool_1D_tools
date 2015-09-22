@@ -178,7 +178,7 @@ class SelectObNameEqualsMeshNameOperator(utils.BatchOperatorMixin, bpy.types.Ope
 
 
 def get_char_delta(digits):
-    char_code = ord('A') + digits
+    char_code = ord('A') + len(str(digits))
     return chr(char_code)
 
 
@@ -189,8 +189,7 @@ class VerticesCountToNameMixin(utils.BatchOperatorMixin):
 
     def get_index_char(self, obj):
         vertices = len(obj.data.vertices)
-        digits = len(str(vertices))
-        return get_char_delta(digits)
+        return get_char_delta(vertices)
 
     def calculate_dimensions_factor(self, obj):
         return (obj.dimensions[0] + obj.dimensions[1] + obj.dimensions[2]) / 3.0
