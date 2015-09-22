@@ -1,6 +1,7 @@
 __author__ = 'alexey.nakoryakov'
 
 import bpy
+import math
 from . import utils
 
 
@@ -176,6 +177,40 @@ class SelectObNameEqualsMeshNameOperator(utils.BatchOperatorMixin, bpy.types.Ope
         obj.select = True
 
 
+class VerticesCountToNameOperator(utils.BatchOperatorMixin, bpy.types.Operator):
+    bl_idname = 'object.vertices_count_to_name'
+    bl_label = 'Vertices Count as ob prefix'
+
+    def get_index_char(self, obj):
+        vertices = len(obj.data.vertices)
+        digits = len(str(vertices))
+        # delta = self.max_digits - digits
+        char_code = ord('Z') - digits
+        return chr(char_code)
+
+    # def pre_process_objects(self):
+    #     max_vertices = max([len(o.data.vertices) for o in self.work_objects])
+    #     self.max_digits = len(str(max_vertices))
+
+    def process_object(self, obj):
+        name = obj.name
+        vert_count = len(obj.data.vertices)
+        new_name = "={}={}=={}".format(self.get_index_char(obj), vert_count, name)
+        obj.name = new_name
+
+
+class RemoveVerticesCountPrefixOperator(utils.BatchOperatorMixin, bpy.types.Operator):
+    bl_idname = 'object.remove_vertices_count_prefix'
+    bl_label = 'Remove Vertices Count Prefix'
+
+    def filter_object(self, obj):
+        return '==' in obj.name
+
+    def process_object(self, obj):
+        part = obj.name.partition('==')
+        obj.name = part[-1] or part[0]
+
+
 def create_panel(col):
     operators = [
         'object.obname_to_meshname',
@@ -192,6 +227,8 @@ def create_panel(col):
         'object.find_ob_name',
         'mesh.find_mesh_name',
         'object.select_obname_equals_meshname',
-        ]
+        'object.vertices_count_to_name',
+        'object.remove_vertices_count_prefix',
+    ]
     for op in operators:
         col.operator(op)

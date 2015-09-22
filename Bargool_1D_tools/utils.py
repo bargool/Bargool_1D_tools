@@ -67,15 +67,15 @@ class BatchOperatorMixin(object):
         self.context = context
         # Select and filter objects
         if self.use_selected_objects:
-            objects = context.selected_objects
+            self.objects = context.selected_objects
         else:
             drop_selection(context.scene)
-            objects = context.scene.objects
+            self.objects = context.scene.objects
+        self.work_objects = [obj for obj in self.objects if self.filter_object(obj)]
         self.pre_process_objects()
-        work_objects = [obj for obj in objects if self.filter_object(obj)]
         # Cache old active object. At the end we will return activeness
         old_active = bpy.context.scene.objects.active
-        for obj in work_objects:
+        for obj in self.work_objects:
             # As I understood, objects for bpy.ops operators must be
             # active in most cases
             bpy.context.scene.objects.active = obj
