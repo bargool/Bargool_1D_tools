@@ -17,7 +17,7 @@ def remove_suffix(s):
 
 class ObnameToMeshnameOperator(utils.BatchOperatorMixin, bpy.types.Operator):
     bl_idname = 'object.obname_to_meshname'
-    bl_label = 'Obname To Meshname'
+    bl_label = 'Obname to Meshname >'
     bl_description = 'Assigns object name to its meshname. Works with all selected objects'
 
     def process_object(self, obj):
@@ -26,7 +26,7 @@ class ObnameToMeshnameOperator(utils.BatchOperatorMixin, bpy.types.Operator):
 
 class MeshnameToObnameOperator(utils.BatchOperatorMixin, bpy.types.Operator):
     bl_idname = 'object.meshname_to_obname'
-    bl_label = 'Meshname To Obname'
+    bl_label = 'Meshname to Obname <'
     bl_description = 'Assigns meshname to object name. Works with all selected objects'
 
     def process_object(self, obj):
