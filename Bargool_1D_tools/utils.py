@@ -71,8 +71,8 @@ class BatchOperatorMixin(object):
         else:
             drop_selection(context.scene)
             self.objects = context.scene.objects
+        self.pre_filter_objects()
         self.work_objects = [obj for obj in self.objects if self.filter_object(obj)]
-        self.pre_process_objects()
         # Cache old active object. At the end we will return activeness
         old_active = bpy.context.scene.objects.active
         for obj in self.work_objects:
@@ -91,7 +91,7 @@ class BatchOperatorMixin(object):
     def process_object(self, obj):
         raise NotImplementedError
 
-    def pre_process_objects(self):
+    def pre_filter_objects(self):
         pass
 
     def post_process_objects(self):

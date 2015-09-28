@@ -35,7 +35,7 @@ class MeshnameToObnameOperator(utils.BatchOperatorMixin, bpy.types.Operator):
 
 class ActiveNameMixin(utils.BatchOperatorMixin):
     """ Mixin to for with name of active object """
-    def pre_process_objects(self):
+    def pre_filter_objects(self):
         self.obname = self.context.active_object.name
 
     def filter_object(self, obj):
@@ -145,7 +145,7 @@ class FindObNameOperator(utils.ObjectsSelectorMixin, bpy.types.Operator):
     bl_label = 'Find ObName'
     use_selected_objects = False
 
-    def pre_process_objects(self):
+    def pre_filter_objects(self):
         self.search_string = self.context.active_object.name.lower()
 
     def filter_object(self, obj):
@@ -157,7 +157,7 @@ class FindMeshNameOperator(utils.ObjectsSelectorMixin, bpy.types.Operator):
     bl_label = 'Find MeshName'
     use_selected_objects = False
 
-    def pre_process_objects(self):
+    def pre_filter_objects(self):
         self.search_string = self.context.active_object.data.name.lower()
 
     def filter_object(self, obj):
