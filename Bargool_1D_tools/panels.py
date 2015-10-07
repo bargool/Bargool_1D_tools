@@ -3,7 +3,7 @@
 __author__ = 'Aleksey Nakoryakov'
 
 import bpy
-from . import naming
+from . import naming, import_utils
 
 
 class BatchSetPanel(bpy.types.Panel):
@@ -63,16 +63,13 @@ class BatchSetPanel(bpy.types.Panel):
         if self.do_create_subpanel(top_col, 'do_show_cleanup', 'Obj Import Cleanup'):
             box = top_col.box()
             col = box.column(align=True)
-            col.operator('mesh.import_cleanup')
-            col.prop(scene.batch_operator_settings,
-                     'import_cleanup_apply_rotations')
-            col.prop(scene.batch_operator_settings,
-                     'import_cleanup_recalculate_normals')
+            import_utils.create_panel(col, scene)
 
         # Instances Placement
         if self.do_create_subpanel(top_col, 'do_show_instances_placement', 'Instances Placement'):
             box = top_col.box()
             col = box.column(align=True)
+
             operators = [
                 'object.import_instances',
                 'object.find_instances',

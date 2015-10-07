@@ -45,6 +45,17 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
         name='Recalculate Normals', default=False)
     import_cleanup_apply_rotations = bpy.props.BoolProperty(
         name='Apply rotation', default=True)
+    import_cleanup_remove_doubles = bpy.props.BoolProperty(
+        name='Remove doubles', default=True)
+    import_cleanup_remove_doubles_threshold = bpy.props.FloatProperty(
+        name='threshold', default=0.001, precision=4,
+        min=0.0001, max=10
+    )
+    import_cleanup_tris_to_quads = bpy.props.BoolProperty(
+        name='Tris to quads', default=True)
+    import_cleanup_tris_to_quads_limit = bpy.props.IntProperty(
+        name='limit', default=60, min=0, max=360
+    )
 
 
 class BatchPanelSettings(bpy.types.PropertyGroup):
