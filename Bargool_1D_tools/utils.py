@@ -1,8 +1,9 @@
-__author__ = 'Alexey.Nakoryakov'
-
+import collections
+from abc import abstractmethod, ABCMeta
 import bpy
 from bpy.props import StringProperty
-import collections
+
+__author__ = 'Alexey.Nakoryakov'
 
 
 def flatten(*args):
@@ -47,13 +48,15 @@ class OpenFileHelper(object):
 
 class BatchOperatorMixin(object):
     """
-    Base class for batch processing objects
+    Abstract base class for batch processing objects
     Inheritors must define:
         filter_object method to define what objects to process
         process_object method to define what to do with each object
     This mixin is for use in batch_operator_factory, because most of operators
     just filter some objects and make simple things with them
     """
+    __metaclass__ = ABCMeta
+
     bl_options = {'REGISTER', 'UNDO'}
 
     use_selected_objects = True
@@ -88,6 +91,7 @@ class BatchOperatorMixin(object):
     def filter_object(self, obj):
         return True
 
+    @abstractmethod
     def process_object(self, obj):
         raise NotImplementedError
 

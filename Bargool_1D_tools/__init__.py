@@ -32,8 +32,10 @@ def register():
 
 
 def unregister():
-    del bpy.types.Scene.batch_operator_settings
-    del bpy.types.Scene.batch_panel_settings
+    if hasattr(bpy.types.Scene, 'batch_operator_settings'):
+        del bpy.types.Scene.batch_operator_settings
+    if hasattr(bpy.types.Scene, 'batch_panel_settings'):
+        del bpy.types.Scene.batch_panel_settings
     bpy.utils.unregister_module(__name__)
 
 

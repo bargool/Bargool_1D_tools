@@ -260,6 +260,7 @@ class FixUtfNamesOperator(utils.BatchOperatorMixin, bpy.types.Operator):
     error_name = "++"
 
     def process_object(self, obj):
+        # Check if there is some errors in names
         try:
             name = obj.name
             name = obj.data.name
@@ -289,7 +290,7 @@ def create_panel(col):
         'object.select_obname_equals_meshname',
         'object.vertices_count_to_name',
         'object.vertices_count_to_name_reverse',
-        'object.vertices_factor_to_prefix',
+        VerticesFactorToPrefixOperator.bl_idname,
         'object.remove_vertices_count_prefix',
         'object.fix_utf_names',
     ]

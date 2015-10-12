@@ -17,6 +17,8 @@ exec(compile(open(filename).read(), filename, 'exec'))
 import Bargool_1D_tools
 import imp
 
+Bargool_1D_tools.unregister()
+
 imp.reload(Bargool_1D_tools)
 
 Bargool_1D_tools.register()
