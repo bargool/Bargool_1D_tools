@@ -62,6 +62,9 @@ class BatchOperatorMixin(object):
     use_selected_objects = True
     context = None
 
+    def get_use_selected_objects(self):
+        return self.use_selected_objects
+
     def execute(self, context):
         """
         Template method pattern
@@ -69,7 +72,7 @@ class BatchOperatorMixin(object):
         """
         self.context = context
         # Select and filter objects
-        if self.use_selected_objects:
+        if self.get_use_selected_objects():
             self.objects = context.selected_objects
         else:
             drop_selection(context.scene)
