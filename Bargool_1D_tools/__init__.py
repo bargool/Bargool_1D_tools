@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 bl_info = {
+    "blender": (2, 76, 0),
     "name": "Bargool_1D tools",
     "description": "",
     "author": "Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)",
     "category": "Object",
-    "version": (1, 4, 17),
+    "version": (1, 5, 0),
     "location": "View3D > Toolbar",
     "wiki_url": "https://github.com/bargool/Bargool_1D_tools",
     "tracker_url": "https://github.com/bargool/Bargool_1D_tools/issues",
