@@ -20,12 +20,12 @@ class ImportCleanupOperator(bpy.types.Operator):
         for ob in objects:
             ob.select = True
             context.scene.objects.active = ob
-            bpy.ops.object.mode_set(mode='EDIT')
-            bpy.ops.mesh.select_all(action='SELECT')
-            settings = context.scene.batch_operator_settings
             # transform_apply works only with non-multiuser
             if settings.import_cleanup_apply_rotations and not instances.is_multiuser(ob):
                 bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
+            bpy.ops.object.mode_set(mode='EDIT')
+            bpy.ops.mesh.select_all(action='SELECT')
+            settings = context.scene.batch_operator_settings
             if settings.import_cleanup_remove_doubles:
                 threshold = settings.import_cleanup_remove_doubles_threshold
                 bpy.ops.mesh.remove_doubles(threshold=threshold, use_unselected=False)
