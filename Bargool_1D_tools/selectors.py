@@ -61,7 +61,7 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
             faces_count = 0
             for f in bm.faces:
                 if f.select:
-                    faces_count += 0
+                    faces_count += 1
             if faces_count == 1:
                 behaviour = 'Z All'
 
