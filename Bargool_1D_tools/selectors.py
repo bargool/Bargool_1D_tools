@@ -58,11 +58,15 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
         behaviour = settings.verticals_select_behaviour
 
         if behaviour == 'Z Between':
+            edges_count = 0
+            for e in bm.edges:
+                if e.select:
+                    edges_count += 1
             faces_count = 0
             for f in bm.faces:
                 if f.select:
                     faces_count += 1
-            if faces_count == 1:
+            if faces_count == 1 or edges_count == 1:
                 behaviour = 'Z All'
 
         if behaviour == 'Z All':
