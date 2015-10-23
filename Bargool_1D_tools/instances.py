@@ -127,9 +127,11 @@ class DropInstancesOperator(bpy.types.Operator):
     def execute(self, context):
         scene = context.scene
         acitive_object = context.active_object
+        # object_layers = list(acitive_object.layers)
         matrices = [o.matrix_local for o in find_instances(acitive_object, context) if o.name != acitive_object.name]
         bpy.ops.mesh.separate()
         separated_object = scene.objects[0]
+        # separated_object.layers = object_layers
         for m in matrices:
             duplicated = create_instance(separated_object, scene)
             duplicated.matrix_local = m

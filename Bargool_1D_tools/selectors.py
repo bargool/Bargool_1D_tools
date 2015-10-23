@@ -15,8 +15,7 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        is_mesh_mode = context.mode == 'EDIT_MESH'
-        return is_mesh_mode
+        return context.mode == 'EDIT_MESH'
 
     @classmethod
     def get_selected_verts(cls, context, bm=None):
@@ -57,6 +56,14 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
 
         settings = context.scene.batch_operator_settings
         behaviour = settings.verticals_select_behaviour
+
+        if behaviour == 'Z Between':
+            faces_count = 0
+            for f in bm.faces:
+                if f.select:
+                    faces_count += 0
+            if faces_count == 1:
+                behaviour = 'Z All'
 
         if behaviour == 'Z All':
             fitness_func = lambda vert: [

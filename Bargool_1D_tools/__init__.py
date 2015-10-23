@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 bl_info = {
-    "blender": (2, 76, 0),
+    "blender": (2, 76, 1),
     "name": "Bargool_1D tools",
     "description": "",
     "author": "Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)",
