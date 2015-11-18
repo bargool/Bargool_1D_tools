@@ -263,13 +263,27 @@ class FixUtfNamesOperator(utils.BatchOperatorMixin, bpy.types.Operator):
         # Check if there is some errors in names
         try:
             name = obj.name
-            name = obj.data.name
+            if obj.data:
+                name = obj.data.name
         except UnicodeDecodeError:
             obj.name = self.error_name
             obj.data.name = self.error_name
             obj.select = True
         else:
             obj.select = False
+
+
+class ObjectSelectNoDataOperator(utils.BatchOperatorMixin, bpy.types.Operator):
+    bl_idname = 'object.object_select_no_data'
+    bl_label = 'Select objects no data'
+
+    use_selected_objects = False
+
+    def filter_object(self, obj):
+        return not obj.data
+
+    def process_object(self, obj):
+        obj.select = True
 
 
 def create_panel(col):
@@ -293,6 +307,7 @@ def create_panel(col):
         VerticesFactorToPrefixOperator.bl_idname,
         'object.remove_vertices_count_prefix',
         'object.fix_utf_names',
+        ObjectSelectNoDataOperator.bl_idname,
     ]
     for op in operators:
         col.operator(op)
