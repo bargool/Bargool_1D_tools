@@ -29,11 +29,22 @@ class BatchRemoverMixin(utils.BatchOperatorMixin):
     def get_use_selected_objects(self):
         return not self.context.scene.batch_operator_settings.work_without_selection
 
+    def pre_filter_objects(self):
+        self.count = 0
+
     def process_object(self, obj):
+        self.count += 1
         if self.operator_type == self.OPERATOR_TYPE_ENUM.do_select:
             obj.select = True
         else:
             self.do_remove(obj)
+
+    def post_process_objects(self):
+        message = '{} {} properties'.format(
+            'Removed' if self.operator_type == self.OPERATOR_TYPE_ENUM.do_remove else 'Selected',
+            self.count
+        )
+        self.report({'INFO'}, message)
 
     # @abc.abstractmethod
     def do_remove(self, obj):

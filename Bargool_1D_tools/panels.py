@@ -94,6 +94,7 @@ class BatchSetPanel(bpy.types.Panel):
                 'object.match_draw_type',
                 'object.match_hide_render',
                 'object.select_same_hide_render',
+                ''
                 ]
             for op in operators:
                 col.operator(op)

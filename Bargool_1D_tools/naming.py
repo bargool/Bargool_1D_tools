@@ -143,7 +143,7 @@ class RemoveMeshSuffixOperator(ActiveMeshNameMixin, bpy.types.Operator):
 class FindObNameOperator(utils.ObjectsSelectorMixin, bpy.types.Operator):
     bl_idname = 'object.find_ob_name'
     bl_label = 'Find ObName'
-    use_selected_objects = False
+    use_only_selected_objects = False
 
     def pre_filter_objects(self):
         self.search_string = self.context.active_object.name.lower()
@@ -155,7 +155,7 @@ class FindObNameOperator(utils.ObjectsSelectorMixin, bpy.types.Operator):
 class FindMeshNameOperator(utils.ObjectsSelectorMixin, bpy.types.Operator):
     bl_idname = 'mesh.find_mesh_name'
     bl_label = 'Find MeshName'
-    use_selected_objects = False
+    use_only_selected_objects = False
 
     def pre_filter_objects(self):
         self.search_string = self.context.active_object.data.name.lower()
@@ -168,7 +168,7 @@ class SelectObNameEqualsMeshNameOperator(utils.BatchOperatorMixin, bpy.types.Ope
     bl_idname = 'object.select_obname_equals_meshname'
     bl_label = 'Select ObName == MeshName'
 
-    use_selected_objects = False
+    use_only_selected_objects = False
 
     def filter_object(self, obj):
         return obj.name == obj.data.name
@@ -255,7 +255,7 @@ class FixUtfNamesOperator(utils.BatchOperatorMixin, bpy.types.Operator):
     bl_idname = 'object.fix_utf_names'
     bl_label = 'Fix UTF names'
 
-    use_selected_objects = False
+    use_only_selected_objects = False
 
     error_name = "++"
 
@@ -277,7 +277,7 @@ class ObjectSelectNoDataOperator(utils.BatchOperatorMixin, bpy.types.Operator):
     bl_idname = 'object.object_select_no_data'
     bl_label = 'Select objects no data'
 
-    use_selected_objects = False
+    use_only_selected_objects = False
 
     def filter_object(self, obj):
         return not obj.data

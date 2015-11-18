@@ -59,11 +59,11 @@ class BatchOperatorMixin(object):
 
     bl_options = {'REGISTER', 'UNDO'}
 
-    use_selected_objects = True
+    use_only_selected_objects = True
     context = None
 
     def get_use_selected_objects(self):
-        return self.use_selected_objects
+        return self.use_only_selected_objects
 
     def execute(self, context):
         """
