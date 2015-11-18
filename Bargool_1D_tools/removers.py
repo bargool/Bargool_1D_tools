@@ -239,7 +239,7 @@ class ZeroSubsurfsEraserOperator(BatchRemoverMixin, bpy.types.Operator):
 class EdgeSplitRemoverOperator(BatchRemoverMixin, bpy.types.Operator):
     bl_idname = 'object.edge_split_remover'
     bl_label = 'Edge Split Batch Remove/Select'
-    bl_description = 'Removes Edge Splits from selected or all objects in scene'
+    bl_description = 'Removes/selects Edge Splits from selected or all objects in scene'
     dropdown_name = 'Edge Split'
 
     def filter_object(self, obj):
@@ -248,11 +248,29 @@ class EdgeSplitRemoverOperator(BatchRemoverMixin, bpy.types.Operator):
 
     def do_remove(self, obj):
         count = 0
-        edge_eplits = [m for m in obj.modifiers if m.type == 'EDGE_SPLIT']
-        for modifier in edge_eplits:
+        edge_splits = [m for m in obj.modifiers if m.type == 'EDGE_SPLIT']
+        for modifier in edge_splits:
             bpy.ops.object.modifier_remove(modifier=modifier.name)
             count += 1
         return count
+
+
+class MirrorMDFRemoverOperator(BatchRemoverMixin, bpy.types.Operator):
+    bl_idname = 'object.mirror_mdf_remover'
+    bl_label = 'Mirror modifier Batch Remove/Select'
+    bl_description = 'Removes/selects Mirror modifier from selected or all objects in scene'
+    dropdown_name = 'Mirror'
+
+    def filter_object(self, obj):
+        has_modifiers = hasattr(obj, 'modifiers')
+        return has_modifiers and any([m for m in obj.modifiers if m.type == "MIRROR"])
+
+    def do_remove(self, obj):
+        count = 0
+        mirrors = [m for m in obj.modifiers if m.type == 'MIRROR']
+        for modifier in mirrors:
+            bpy.ops.object.modifier_remove(modifier=modifier.name)
+            count += 1
 
 
 def create_panel_rems(col, scene):
