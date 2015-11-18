@@ -236,6 +236,25 @@ class ZeroSubsurfsEraserOperator(BatchRemoverMixin, bpy.types.Operator):
         return count
 
 
+class EdgeSplitRemoverOperator(BatchRemoverMixin, bpy.types.Operator):
+    bl_idname = 'object.edge_split_remover'
+    bl_label = 'Edge Split Batch Remove/Select'
+    bl_description = 'Removes Edge Splits from selected or all objects in scene'
+    dropdown_name = 'Edge Split'
+
+    def filter_object(self, obj):
+        has_modifiers = hasattr(obj, 'modifiers')
+        return has_modifiers and any([m for m in obj.modifiers if m.type == 'EDGE_SPLIT'])
+
+    def do_remove(self, obj):
+        count = 0
+        edge_eplits = [m for m in obj.modifiers if m.type == 'EDGE_SPLIT']
+        for modifier in edge_eplits:
+            bpy.ops.object.modifier_remove(modifier=modifier.name)
+            count += 1
+        return count
+
+
 def create_panel_rems(col, scene):
     col.operator(scene.batch_operator_settings.removers_dropdown,
                  text='Remove').operator_type = BatchRemoverMixin.OPERATOR_TYPE_ENUM.do_remove

@@ -21,7 +21,7 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
     # We need all subclasses of BatchRemoverMixin in one dropdown
     operators = [
         (op.bl_idname, op.dropdown_name, get_description(op))
-        for op in BatchRemoverMixin.__subclasses__()]
+        for op in sorted(BatchRemoverMixin.__subclasses__(), key=lambda x: x.dropdown_name)]
 
     removers_dropdown = bpy.props.EnumProperty(
         items=operators,
