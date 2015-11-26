@@ -1,3 +1,5 @@
+from Bargool_1D_tools.utils import draw_operator
+
 __author__ = 'alexey.nakoryakov'
 
 import bpy
@@ -310,4 +312,4 @@ def create_panel(col):
         ObjectSelectNoDataOperator.bl_idname,
     ]
     for op in operators:
-        col.operator(op)
+        draw_operator(col, op)

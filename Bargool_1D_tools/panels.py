@@ -2,7 +2,8 @@
 import bpy
 
 from Bargool_1D_tools.removers import create_panel_rems
-from . import naming, import_utils
+from Bargool_1D_tools.utils import draw_operator
+from . import naming, import_utils, miscellaneous
 
 __author__ = 'Aleksey Nakoryakov'
 
@@ -70,13 +71,13 @@ class BatchSetPanel(bpy.types.Panel):
             operators = [
                 'object.import_instances',
                 'object.find_instances',
-                'object.select_instances',
+                ('object.select_instances', 'Select Instances'),
                 'object.deselect_instances',
                 'object.drop_instances',
                 'object.instances_to_cursor',
                 ]
             for op in operators:
-                col.operator(op)
+                draw_operator(col, op)
 
         # Naming Tools
         if self.do_create_subpanel(top_col, 'do_show_naming_tools', 'Naming Tools'):
@@ -88,13 +89,4 @@ class BatchSetPanel(bpy.types.Panel):
         if self.do_create_subpanel(top_col, 'do_show_misc', 'Misc'):
             box = top_col.box()
             col = box.column(align=True)
-            operators = [
-                'object.material_slot_assign',
-                'object.isolate_layers',
-                'object.match_draw_type',
-                'object.match_hide_render',
-                'object.select_same_hide_render',
-                'object.run_current_script',
-                ]
-            for op in operators:
-                col.operator(op)
+            miscellaneous.create_panel(col, scene)

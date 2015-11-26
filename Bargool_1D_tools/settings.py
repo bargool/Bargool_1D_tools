@@ -58,6 +58,10 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
     )
 
 
+class TestSettings():
+    text = None
+
+
 class BatchPanelSettings(bpy.types.PropertyGroup):
     do_show_select_vertices = bpy.props.BoolProperty(default=False)
     do_show_remover = bpy.props.BoolProperty(default=False)

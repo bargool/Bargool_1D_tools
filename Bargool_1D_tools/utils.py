@@ -1,5 +1,6 @@
 import collections
 from abc import abstractmethod, ABCMeta
+
 import bpy
 from bpy.props import StringProperty
 
@@ -108,3 +109,10 @@ class BatchOperatorMixin(object):
 class ObjectsSelectorMixin(BatchOperatorMixin):
     def process_object(self, obj):
         obj.select = True
+
+
+def draw_operator(layout, op):
+    if not isinstance(op, str):
+        layout.operator(op[0], text=op[1])
+    else:
+        layout.operator(op)

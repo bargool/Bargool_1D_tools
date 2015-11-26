@@ -2,7 +2,7 @@
 import bpy
 from . import selectors, import_utils, prop_matchers
 from . import removers, panels, instances, naming, miscellaneous
-from .settings import BatchOperatorSettings, BatchPanelSettings
+from .settings import BatchOperatorSettings, BatchPanelSettings, TestSettings
 
 bl_info = {
     "blender": (2, 76, 1),
@@ -10,7 +10,7 @@ bl_info = {
     "description": "",
     "author": "Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)",
     "category": "Object",
-    "version": (1, 6, 0),
+    "version": (1, 6, 2),
     "location": "View3D > Toolbar",
     "wiki_url": "https://github.com/bargool/Bargool_1D_tools",
     "tracker_url": "https://github.com/bargool/Bargool_1D_tools/issues",
@@ -30,6 +30,7 @@ def register():
         type=BatchOperatorSettings)
     bpy.types.Scene.batch_panel_settings = bpy.props.PointerProperty(
         type=BatchPanelSettings)
+    bpy.types.Scene.test_props = TestSettings
 
 
 def unregister():

@@ -129,7 +129,8 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
 
 class SelectInstancesOperator(bpy.types.Operator):
     bl_idname = 'object.select_instances'
-    bl_label = 'Select Instances'
+    # Double "II" just for quick "space" start of operator (space -> "ii", an there is operator)
+    bl_label = 'Select IInstances'
     bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
