@@ -147,6 +147,25 @@ class SelectInstancesOperator(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class FilterInstancesOperator(utils.BatchOperatorMixin, bpy.types.Operator):
+    bl_idname = 'object.filter_instances'
+    # Double "III" just for quick "space" start of operator (space -> "iii", an there is operator)
+    bl_label = 'Filter IIInstances'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    use_only_selected_objects = False
+    mesh_names = {}
+
+    def pre_filter_objects(self):
+        self.mesh_names = set([o.data.name for o in self.selected_objects])
+
+    def filter_object(self, obj):
+        return obj.data.name in self.mesh_names and obj.data.users > 1
+
+    def process_object(self, obj):
+        obj.select = True
+
+
 class DeselectInstancesOperator(utils.BatchOperatorMixin, bpy.types.Operator):
     bl_idname = 'object.deselect_instances'
     bl_label = 'Deselect Instances'

@@ -73,6 +73,7 @@ class BatchOperatorMixin(object):
         """
         self.context = context
         # Select and filter objects
+        self.selected_objects = context.selected_objects[:]
         if self.get_use_selected_objects():
             self.objects = context.selected_objects
         else:
