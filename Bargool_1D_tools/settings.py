@@ -60,6 +60,7 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
 
 class TestSettings():
     text = None
+    slope_plane = None
 
 
 class BatchPanelSettings(bpy.types.PropertyGroup):
