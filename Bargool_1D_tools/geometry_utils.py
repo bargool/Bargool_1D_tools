@@ -65,12 +65,12 @@ class Line(object):
         return self._vector
 
     def get_point_on_line(self, x=None, y=None, z=None):
-        t = 0
+        assert len([i for i in (x, y, z) if i is not None]) == 1
         if x is not None:
             t = -1 * self._x0 / self._p1
-        if y is not None:
+        elif y is not None:
             t = -1 * self._y0 / self._p2
-        if z is not None:
+        else:  # z is not None
             t = -1 * self._z0 / self._p3
         return Point(
             x or self._p1 * t + self._x0,
@@ -101,6 +101,8 @@ class Plane(object):
             raise AttributeError
 
     def intersect(self, plane):
+        if not isinstance(plane, Plane):
+            raise AttributeError
         x = self._b * plane._c - self._c * plane._b
         y = self._c * plane._a - self._a * plane._c
         z = self._a * plane._b - self._b * plane._a
@@ -111,6 +113,12 @@ class Plane(object):
 
 
 def create_slope_plane(point0, point1):
+    """Creates slope plane that uses line threw point0, point1 as gradient"""
+
+    #  We are going to create plane that perpendicular to input line point0 - point1
+    #  Then we intersect it to plane XOY and retrieve line perpendicular to previous
+    #  With this two lines we create slope plane
+
     v = Vector(p0=point0, p1=point1)
     line1 = Line(point=point0, vector=v)
     intersect_point = line1.get_point_on_line(z=0)
