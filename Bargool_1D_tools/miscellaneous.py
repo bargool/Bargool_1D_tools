@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import bpy
-from . import geometry
 
 __author__ = 'Aleksey Nakoryakov'
 
@@ -60,7 +59,3 @@ def create_panel(col, scene):
                  text='Remember script').operator_type = SaveAndRunScriptOperator.OPERATOR_TYPE_ENUM.do_save
     col.operator('object.save_and_run_script',
                  text='Run script').operator_type = SaveAndRunScriptOperator.OPERATOR_TYPE_ENUM.do_execute
-    col.operator(geometry.PickToSlopeOperator.bl_idname,
-                 text='Remember slope').operator_type = geometry.PickToSlopeOperator.OPERATOR_TYPE_ENUM.do_remember
-    col.operator(geometry.PickToSlopeOperator.bl_idname,
-                 text='Pick to slope').operator_type = geometry.PickToSlopeOperator.OPERATOR_TYPE_ENUM.do_execute

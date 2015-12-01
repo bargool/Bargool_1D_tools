@@ -3,7 +3,7 @@ import bpy
 
 from Bargool_1D_tools.removers import create_panel_rems
 from Bargool_1D_tools.utils import draw_operator
-from . import naming, import_utils, miscellaneous
+from . import naming, import_utils, miscellaneous, geometry
 
 __author__ = 'Aleksey Nakoryakov'
 
@@ -85,6 +85,12 @@ class BatchSetPanel(bpy.types.Panel):
             box = top_col.box()
             col = box.column(align=True)
             naming.create_panel(col)
+
+        # Slope Align
+        if self.do_create_subpanel(top_col, 'do_show_slope_align', 'Slope Align'):
+            box = top_col.box()
+            col = box.column(align=True)
+            geometry.create_panel(col, scene)
 
         # Misc
         if self.do_create_subpanel(top_col, 'do_show_misc', 'Misc'):
