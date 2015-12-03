@@ -115,10 +115,13 @@ class Plane(object):
 def create_slope_plane(point0, point1):
     """Creates slope plane that uses line threw point0, point1 as gradient"""
 
-    #  We are going to create plane that perpendicular to input line point0 - point1
-    #  Then we intersect it to plane XOY and retrieve line perpendicular to previous
-    #  With this two lines we create slope plane
+    # If points on same height - we need just horizontal plane
+    if point0.z == point1.z:
+        return Plane(point=point0, normal=Vector(x=0, y=0, z=1))
 
+    # We are going to create plane that perpendicular to input line point0 - point1
+    # Then we intersect it to plane XOY and retrieve line perpendicular to previous
+    # With this two lines we create slope plane
     v = Vector(p0=point0, p1=point1)
     line1 = Line(point=point0, vector=v)
     intersect_point = line1.get_point_on_line(z=0)
