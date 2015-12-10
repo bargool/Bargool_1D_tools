@@ -56,6 +56,8 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
     import_cleanup_tris_to_quads_limit = bpy.props.IntProperty(
         name='limit', default=60, min=0, max=360
     )
+    geometry_inbound_only = bpy.props.BoolProperty(
+        name='Inbound Only', default=True)
 
 
 class TestSettings():

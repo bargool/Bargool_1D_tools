@@ -44,8 +44,30 @@ class SaveAndRunScriptOperator(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class BatchUnionOperator(bpy.types.Operator):
+    bl_idname = 'object.batch_union'
+    bl_label = 'Bool Multi Union'
+
+    def execute(self, context):
+        obj = context.active_object
+        if obj.data.users > 1:
+            self.report({'ERROR'}, 'Active is multiuser data object')
+            return {'CANCELLED'}
+        selected_objects = [o for o in context.selected_objects if o != obj]
+        for o in selected_objects:
+            bpy.ops.object.modifier_add(type='BOOLEAN')
+            obj.modifiers["Boolean"].operation = 'UNION'
+            obj.modifiers["Boolean"].object = o
+            bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Boolean")
+        obj.select = False
+        bpy.ops.object.delete()
+        obj.select = True
+        return {'FINISHED'}
+
+
 def create_panel(col, scene):
     operators = [
+        BatchUnionOperator.bl_idname,
         'object.material_slot_assign',
         'object.isolate_layers',
         'object.match_draw_type',

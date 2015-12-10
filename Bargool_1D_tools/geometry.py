@@ -40,10 +40,21 @@ class AlignToSlopeOperator(bpy.types.Operator):
             if not slope_plane:
                 self.report({'ERROR'}, 'Must remember vertices previously')
                 return {'CANCELLED'}
+            inbound_only = context.scene.batch_operator_settings.geometry_inbound_only
+            skipped_count = 0
             for v in selected_verts:
-                v.co.z = slope_plane.get_z(v.co.x, v.co.y)
+                z = slope_plane.get_z(v.co.x, v.co.y)
+                if inbound_only:
+                    if slope_plane.selected_z_lower <= z <= slope_plane.selected_z_upper:
+                        v.co.z = z
+                    else:
+                        skipped_count += 1
+                else:
+                    v.co.z = z
             bpy.ops.object.mode_set(mode='OBJECT')
             bpy.ops.object.mode_set(mode='EDIT')
+            if skipped_count:
+                self.report({'INFO'}, 'Skipped {} vertices'.format(skipped_count))
         return {'FINISHED'}
 
 
@@ -52,3 +63,5 @@ def create_panel(col, scene):
                  text='Store slope').operator_type = AlignToSlopeOperator.OPERATOR_TYPE_ENUM.do_remember
     col.operator(AlignToSlopeOperator.bl_idname,
                  text='Align to slope').operator_type = AlignToSlopeOperator.OPERATOR_TYPE_ENUM.do_execute
+    col.prop(scene.batch_operator_settings,
+             'geometry_inbound_only')

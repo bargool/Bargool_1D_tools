@@ -99,6 +99,8 @@ class Plane(object):
                        p.x * v.y * w.z - p.y * w.x * v.z - p.z * v.x * w.y)
         else:
             raise AttributeError
+        self.selected_z_lower = kwargs.get('z_lower', None)
+        self.selected_z_upper = kwargs.get('z_upper', None)
 
     def intersect(self, plane):
         if not isinstance(plane, Plane):
@@ -117,7 +119,7 @@ def create_slope_plane(point0, point1):
 
     # If points on same height - we need just horizontal plane
     if point0.z == point1.z:
-        return Plane(point=point0, normal=Vector(x=0, y=0, z=1))
+        return Plane(point=point0, normal=Vector(x=0, y=0, z=1), z_lower=point0.z, z_upper=point0.z)
 
     # We are going to create plane that perpendicular to input line point0 - point1
     # Then we intersect it to plane XOY and retrieve line perpendicular to previous
@@ -129,4 +131,6 @@ def create_slope_plane(point0, point1):
     plane = Plane(point=intersect_point, normal=v)
     plane_xoy = Plane(point=intersect_point, normal=Vector(x=0, y=0, z=1))
     intersect_line = Line(point=intersect_point, vector=plane.intersect(plane_xoy))
-    return Plane(point=intersect_point, vector1=v, vector2=intersect_line.vector)
+    return Plane(point=intersect_point,
+                 vector1=v, vector2=intersect_line.vector,
+                 z_lower=min(point0.z, point1.z), z_upper=max(point0.z, point1.z))
