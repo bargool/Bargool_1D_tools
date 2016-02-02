@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import bpy
-from . import selectors, import_utils, prop_matchers, geometry
-from . import removers, panels, instances, naming, miscellaneous
+from . import (selectors, import_utils, prop_matchers, geometry,
+               removers, panels, instances, naming, miscellaneous, utils)
 from .settings import BatchOperatorSettings, BatchPanelSettings, TestSettings
 
 bl_info = {
@@ -10,7 +10,7 @@ bl_info = {
     "description": "",
     "author": "Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)",
     "category": "Object",
-    "version": (1, 7, 3),
+    "version": (1, 8, 0),
     "location": "View3D > Toolbar",
     "wiki_url": "https://github.com/bargool/Bargool_1D_tools",
     "tracker_url": "https://github.com/bargool/Bargool_1D_tools/issues",
@@ -20,7 +20,7 @@ bl_info = {
 def reload_modules():
     import imp
     for m in [selectors, import_utils, prop_matchers, removers, panels, settings, instances, naming, miscellaneous,
-              geometry]:
+              geometry, utils]:
         imp.reload(m)
 
 

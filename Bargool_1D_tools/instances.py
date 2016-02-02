@@ -2,7 +2,7 @@
 
 import bpy
 import collections
-from .utils import check_equality, OpenFileHelper
+from .utils import check_equality, OpenFileHelper, BatchOperatorMixin
 
 __author__ = 'alexey.nakoryakov'
 
@@ -36,6 +36,13 @@ class BlockInstance(object):
             s = s.replace('(', '')
             s = s.replace(')', '')
             args = s.split()
+        elif len(args) == 1 and isinstance(args[0], bpy.types.Object):
+            o = args[0]
+            self.name = o.data.name
+            self.coords = list(o.location)
+            self.scale = list(o.scale)
+            self.rotation = list(o.rotation_euler)
+            return
         self.name = args[0]
         self.coords = list(map(float, args[1:4]))
         self.scale = list(map(float, args[4:7]))
@@ -58,8 +65,11 @@ class BlockInstance(object):
                     check_equality([obj.rotation_euler[2], ], [self.rotation, ], tolerance))
         return equality
 
+    # def __repr__(self):
+    #     return '({} {!r} {!r} {!r})'.format(self.name, self.coords, self.rotation, self.scale)
+
     def __str__(self):
-        return '({} {} {} {})'.format(self.name, self.coords, self.scale, self.rotation)
+        return '({} {!r} {!r} {!r})'.format(self.name, self.coords, self.rotation, self.scale)
 
 
 def read_file(filepath):
@@ -72,6 +82,12 @@ def read_file(filepath):
             else:
                 d[l.name].append(l)
     return d
+
+
+def write_file(filepath, instances):
+    print(instances)
+    with open(filepath, 'w') as f:
+        f.writelines(["%s\n" % i for i in instances])
 
 
 class ImportTextAsInstancesOperator(OpenFileHelper, bpy.types.Operator):
@@ -92,6 +108,20 @@ class ImportTextAsInstancesOperator(OpenFileHelper, bpy.types.Operator):
                 for inst in instances:
                     duplicated = create_instance(obj, scene)
                     inst.modify_obj(duplicated)
+        return {'FINISHED'}
+
+
+class ExportInstancesAsTextOperator(OpenFileHelper, bpy.types.Operator):
+    bl_idname = 'object.export_instances_as_text'
+    bl_label = 'Export Instances'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    filter_glob = bpy.props.StringProperty(default="*.txt;",
+                                           options={'HIDDEN'})
+
+    def execute(self, context):
+        objects = [BlockInstance(obj) for obj in context.selected_objects]
+        write_file(self.filepath, objects)
         return {'FINISHED'}
 
 
@@ -163,3 +193,13 @@ class InstancesToCursourOperator(bpy.types.Operator):
             duplicated.select = True
 
         return {'FINISHED'}
+
+
+class CombineOperator(BatchOperatorMixin, bpy.types.Operator):
+    bl_idname = 'object.combine'
+    bl_label = 'Combine objects'
+
+    use_only_selected_objects = True
+
+    def process_object(self, obj):
+        obj.location = self.active_object.location

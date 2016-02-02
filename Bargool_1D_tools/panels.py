@@ -70,12 +70,14 @@ class BatchSetPanel(bpy.types.Panel):
 
             operators = [
                 'object.import_instances',
+                'object.export_instances_as_text',
                 'object.find_instances',
                 ('object.select_instances', 'Select Instances'),
                 ('object.filter_instances', 'Filter Instances'),
                 'object.deselect_instances',
                 'object.drop_instances',
                 'object.instances_to_cursor',
+                'object.combine',
                 ]
             for op in operators:
                 draw_operator(col, op)

@@ -53,12 +53,30 @@ class BatchUnionOperator(bpy.types.Operator):
         if obj.data.users > 1:
             self.report({'ERROR'}, 'Active is multiuser data object')
             return {'CANCELLED'}
+        do_triangulate = context.scene.batch_operator_settings.do_triangulate_while_union
+        scene = context.scene
+        if do_triangulate:
+            for o in context.selected_objects:
+                # Only in edge select
+                # bpy.ops.mesh.select_non_manifold()
+                scene.objects.active = o
+                bpy.ops.object.mode_set(mode='EDIT')
+                bpy.ops.mesh.select_all(action='SELECT')
+                bpy.ops.mesh.quads_convert_to_tris()
+                bpy.ops.object.mode_set(mode='OBJECT')
+
+        scene.objects.active = obj
         selected_objects = [o for o in context.selected_objects if o != obj]
         for o in selected_objects:
             bpy.ops.object.modifier_add(type='BOOLEAN')
             obj.modifiers["Boolean"].operation = 'UNION'
             obj.modifiers["Boolean"].object = o
             bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Boolean")
+            if do_triangulate:
+                bpy.ops.object.mode_set(mode='EDIT')
+                bpy.ops.mesh.select_all(action='SELECT')
+                bpy.ops.mesh.quads_convert_to_tris()
+                bpy.ops.object.mode_set(mode='OBJECT')
         obj.select = False
         bpy.ops.object.delete()
         obj.select = True
@@ -67,14 +85,18 @@ class BatchUnionOperator(bpy.types.Operator):
 
 def create_panel(col, scene):
     operators = [
-        BatchUnionOperator.bl_idname,
         'object.material_slot_assign',
         'object.isolate_layers',
         'object.match_draw_type',
         'object.match_hide_render',
         'object.select_same_hide_render',
         'object.run_current_script',
-        ]
+    ]
+
+    box = col.box().column(align=True)
+    box.operator(BatchUnionOperator.bl_idname)
+    box.prop(scene.batch_operator_settings,
+             'do_triangulate_while_union')
     for op in operators:
         col.operator(op)
     col.operator('object.save_and_run_script',

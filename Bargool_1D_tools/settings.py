@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-
-__author__ = 'Aleksey Nakoryakov'
-
 import bpy
 from .removers import BatchRemoverMixin
+
+__author__ = 'Aleksey Nakoryakov'
 
 
 def get_description(operator):
@@ -58,6 +57,9 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
     )
     geometry_inbound_only = bpy.props.BoolProperty(
         name='Inbound Only', default=True)
+
+    do_triangulate_while_union = bpy.props.BoolProperty(name='Do triangulate',
+                                                        default=True)
 
 
 class TestSettings():

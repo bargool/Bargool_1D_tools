@@ -1,4 +1,8 @@
+import imp
+import Bargool_1D_tools
+
 __author__ = 'alexey.nakoryakov'
+
 """
 This file is just for testing purposes. In blender text window in test scene input something like
 import bpy
@@ -13,9 +17,6 @@ if dirname not in sys.path:
 filename = os.path.join(dirname, "testing.py")
 exec(compile(open(filename).read(), filename, 'exec'))
 """
-
-import Bargool_1D_tools
-import imp
 
 Bargool_1D_tools.unregister()
 
