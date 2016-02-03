@@ -60,3 +60,4 @@ class MatchDrawTypeOperator(bpy.types.Operator):
         draw_type = active_object.draw_type
         for o in context.selected_objects:
             o.draw_type = draw_type
+        return {'FINISHED'}

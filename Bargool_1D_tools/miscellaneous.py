@@ -91,19 +91,15 @@ class MeshSingleVertexOperator(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        bpy.ops.mesh.print3d_check_intersect()
-        bpy.ops.mesh.print3d_select_report()
         bpy.ops.mesh.select_mode(type='VERT')
 
         obj = context.active_object
         bm = bmesh.from_edit_mesh(obj.data)
 
-        selected_verts = [v for v in bm.verts if v.select==True]
+        selected_verts = [v for v in bm.verts if v.select is True]
         bpy.ops.mesh.select_all(action='DESELECT')
         if selected_verts:
             selected_verts[0].select = True
-
-        bpy.ops.mesh.print3d_select_report()
         return {'FINISHED'}
 
 
