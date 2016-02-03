@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import bpy
+import bmesh
 
 __author__ = 'Aleksey Nakoryakov'
 
@@ -47,6 +48,7 @@ class SaveAndRunScriptOperator(bpy.types.Operator):
 class BatchUnionOperator(bpy.types.Operator):
     bl_idname = 'object.batch_union'
     bl_label = 'Bool Multi Union'
+    bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
         obj = context.active_object
@@ -83,6 +85,47 @@ class BatchUnionOperator(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class MeshSingleVertexOperator(bpy.types.Operator):
+    bl_idname = 'object.mesh_single_vertex'
+    bl_label = 'Mesh single vertex'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        bpy.ops.mesh.print3d_check_intersect()
+        bpy.ops.mesh.print3d_select_report()
+        bpy.ops.mesh.select_mode(type='VERT')
+
+        obj = context.active_object
+        bm = bmesh.from_edit_mesh(obj.data)
+
+        selected_verts = [v for v in bm.verts if v.select==True]
+        bpy.ops.mesh.select_all(action='DESELECT')
+        if selected_verts:
+            selected_verts[0].select = True
+
+        bpy.ops.mesh.print3d_select_report()
+        return {'FINISHED'}
+
+
+class ObjDistributeByXOperator(bpy.types.Operator):
+    bl_idname = 'object.obj_distribute_by_x'
+    bl_label = 'Obj Distribute by X'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        return True if context.selected_objects else False
+
+    def execute(self, context):
+        delta = max((obj.dimensions[0] for obj in context.selected_objects))
+
+        x = context.active_object.location[0]
+        for obj in sorted(context.selected_objects[:], key=lambda o: o.name):
+            obj.location[0] = x
+            x += obj.dimensions[0]*0.3 + delta
+        return {'FINISHED'}
+
+
 def create_panel(col, scene):
     operators = [
         'object.material_slot_assign',
@@ -90,6 +133,8 @@ def create_panel(col, scene):
         'object.match_draw_type',
         'object.match_hide_render',
         'object.select_same_hide_render',
+        MeshSingleVertexOperator.bl_idname,
+        ObjDistributeByXOperator.bl_idname,
         'object.run_current_script',
     ]
 

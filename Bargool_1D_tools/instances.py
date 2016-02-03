@@ -2,6 +2,7 @@
 
 import bpy
 import collections
+from bpy_extras.io_utils import ExportHelper
 from .utils import check_equality, OpenFileHelper, BatchOperatorMixin
 
 __author__ = 'alexey.nakoryakov'
@@ -38,6 +39,7 @@ class BlockInstance(object):
             args = s.split()
         elif len(args) == 1 and isinstance(args[0], bpy.types.Object):
             o = args[0]
+            self.obname = o.name
             self.name = o.data.name
             self.coords = list(o.location)
             self.scale = list(o.scale)
@@ -47,6 +49,7 @@ class BlockInstance(object):
         self.coords = list(map(float, args[1:4]))
         self.scale = list(map(float, args[4:7]))
         self.rotation = float(args[7])
+        self.obname = None
 
     def __check_name(self, obj):
         if obj.data.name != self.name:
@@ -65,11 +68,15 @@ class BlockInstance(object):
                     check_equality([obj.rotation_euler[2], ], [self.rotation, ], tolerance))
         return equality
 
-    # def __repr__(self):
-    #     return '({} {!r} {!r} {!r})'.format(self.name, self.coords, self.rotation, self.scale)
-
     def __str__(self):
-        return '({} {!r} {!r} {!r})'.format(self.name, self.coords, self.rotation, self.scale)
+        return ('("{obname}"\t"{name}"\t'
+                '({coords[0]} {coords[1]} {coords[2]})\t'
+                '({rot[0]} {rot[1]} {rot[2]})\t'
+                '({sc[0]} {sc[1]} {sc[2]}))').format(obname=self.obname,
+                                                     name=self.name,
+                                                     coords=self.coords,
+                                                     rot=self.rotation,
+                                                     sc=self.scale)
 
 
 def read_file(filepath):
@@ -84,10 +91,9 @@ def read_file(filepath):
     return d
 
 
-def write_file(filepath, instances):
-    print(instances)
+def write_file(filepath, items):
     with open(filepath, 'w') as f:
-        f.writelines(["%s\n" % i for i in instances])
+        f.writelines(["%s\n" % i for i in items])
 
 
 class ImportTextAsInstancesOperator(OpenFileHelper, bpy.types.Operator):
@@ -111,13 +117,12 @@ class ImportTextAsInstancesOperator(OpenFileHelper, bpy.types.Operator):
         return {'FINISHED'}
 
 
-class ExportInstancesAsTextOperator(OpenFileHelper, bpy.types.Operator):
+class ExportInstancesAsTextOperator(ExportHelper, bpy.types.Operator):
     bl_idname = 'object.export_instances_as_text'
-    bl_label = 'Export Instances'
+    bl_label = 'Export to text'
     bl_options = {'REGISTER', 'UNDO'}
 
-    filter_glob = bpy.props.StringProperty(default="*.txt;",
-                                           options={'HIDDEN'})
+    filename_ext = ".txt"
 
     def execute(self, context):
         objects = [BlockInstance(obj) for obj in context.selected_objects]
@@ -203,3 +208,5 @@ class CombineOperator(BatchOperatorMixin, bpy.types.Operator):
 
     def process_object(self, obj):
         obj.location = self.active_object.location
+        obj.rotation_euler = self.active_object.rotation_euler
+        obj.scale = self.active_object.scale
