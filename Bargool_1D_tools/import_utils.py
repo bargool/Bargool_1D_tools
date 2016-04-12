@@ -24,6 +24,8 @@ class ImportCleanupOperator(bpy.types.Operator):
             # transform_apply works only with non-multiuser
             if settings.import_cleanup_apply_rotations and not instances.is_multiuser(ob):
                 bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
+            if settings.import_cleanup_clear_custom_normals:
+                bpy.ops.mesh.customdata_custom_splitnormals_clear()
             bpy.ops.object.mode_set(mode='EDIT')
             bpy.ops.mesh.select_all(action='SELECT')
             if settings.import_cleanup_remove_doubles:
@@ -45,6 +47,8 @@ class ImportCleanupOperator(bpy.types.Operator):
 
 def create_panel(col, scene):
     col.operator('mesh.import_cleanup')
+    col.prop(scene.batch_operator_settings,
+             'import_cleanup_clear_custom_normals')
     col.prop(scene.batch_operator_settings,
              'import_cleanup_apply_rotations')
     col.prop(scene.batch_operator_settings,
