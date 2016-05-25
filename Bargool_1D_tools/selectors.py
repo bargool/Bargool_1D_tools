@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
+from collections import namedtuple
+import bmesh
+import bpy
 
 __author__ = 'Aleksey Nakoryakov'
-
-from collections import namedtuple
-import bpy
-import bmesh
-from . import utils
 
 
 class VerticalVerticesSelectOperator(bpy.types.Operator):
@@ -108,6 +106,8 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
                 fitness_func = lambda vert: [
                     z for z in selected_z
                     if z - threshold < vert.co.z < z + threshold]
+        else:
+            raise ValueError('Undefined behaviour: {}'.format(behaviour))q
 
         for vert in bm.verts:
             if not vert.hide and fitness_func(vert):
@@ -125,53 +125,3 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
         self.report({'INFO'}, message)
 
         return {'FINISHED'}
-
-
-class SelectInstancesOperator(bpy.types.Operator):
-    bl_idname = 'object.select_instances'
-    # Double "II" just for quick "space" start of operator (space -> "ii", an there is operator)
-    bl_label = 'Select IInstances'
-    bl_options = {'REGISTER', 'UNDO'}
-
-    @classmethod
-    def poll(cls, context):
-        return len(context.selected_objects) > 0
-
-    def execute(self, context):
-        scene = context.scene
-        selected_objects = context.selected_objects
-        mesh_names = set([o.data.name for o in selected_objects])
-        objects_to_select = [obj for obj in scene.objects if obj.data.name in mesh_names]
-        for obj in objects_to_select:
-            obj.select = True
-        return {'FINISHED'}
-
-
-class FilterInstancesOperator(utils.BatchOperatorMixin, bpy.types.Operator):
-    bl_idname = 'object.filter_instances'
-    # Double "III" just for quick "space" start of operator (space -> "iii", an there is operator)
-    bl_label = 'Filter IIInstances'
-    bl_options = {'REGISTER', 'UNDO'}
-
-    use_only_selected_objects = False
-    mesh_names = {}
-
-    def pre_filter_objects(self):
-        self.mesh_names = set([o.data.name for o in self.selected_objects])
-
-    def filter_object(self, obj):
-        return obj.data.name in self.mesh_names and obj.data.users > 1
-
-    def process_object(self, obj):
-        obj.select = True
-
-
-class DeselectInstancesOperator(utils.BatchOperatorMixin, bpy.types.Operator):
-    bl_idname = 'object.deselect_instances'
-    bl_label = 'Deselect Instances'
-
-    def filter_object(self, obj):
-        return obj.data.users > 1
-
-    def process_object(self, obj):
-        obj.select = False

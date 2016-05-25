@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import bpy
-import collections
 from bpy_extras.io_utils import ExportHelper
-from .utils import check_equality, OpenFileHelper, BatchOperatorMixin
+import collections
+
+from Bargool_1D_tools import utils
+from .utils import check_equality, OpenFileHelper, BatchOperatorMixin, draw_operator
 
 __author__ = 'alexey.nakoryakov'
 
 
 def is_multiuser(obj):
     """ Test for instances """
-    return obj.data.users > 1
+    return hasattr(obj.data, 'users') and obj.data.users > 1
 
 
 def find_instances(obj, context):
@@ -26,6 +28,10 @@ def create_instance(obj, scene):
     duplicated = obj.copy()
     scene.objects.link(duplicated)
     return duplicated
+
+
+def filter_named_data(items):
+    return [o for o in items if hasattr(o.data, 'name')]
 
 
 class BlockInstance(object):
@@ -107,7 +113,7 @@ class ImportTextAsInstancesOperator(OpenFileHelper, bpy.types.Operator):
     def execute(self, context):
         scene = context.scene
         instances_dict = read_file(self.filepath)
-        objects = scene.objects[:]
+        objects = filter_named_data(scene.objects)
         for obj in objects:
             if obj.data.name in instances_dict:
                 instances = instances_dict.pop(obj.data.name)
@@ -125,7 +131,7 @@ class ExportInstancesAsTextOperator(ExportHelper, bpy.types.Operator):
     filename_ext = ".txt"
 
     def execute(self, context):
-        objects = [BlockInstance(obj) for obj in context.selected_objects]
+        objects = [BlockInstance(obj) for obj in filter_named_data(context.selected_objects)]
         write_file(self.filepath, objects)
         return {'FINISHED'}
 
@@ -142,7 +148,7 @@ class FindInstancesFromText(OpenFileHelper, bpy.types.Operator):
         tolerance = context.scene.tool_settings.double_threshold
         scene = context.scene
         instances_dict = read_file(self.filepath)
-        objects = scene.objects
+        objects = filter_named_data(scene.objects)
         for obj in objects:
             if obj.data.name in instances_dict:
                 d = instances_dict[obj.data.name]
@@ -210,3 +216,70 @@ class CombineOperator(BatchOperatorMixin, bpy.types.Operator):
         obj.location = self.active_object.location
         obj.rotation_euler = self.active_object.rotation_euler
         obj.scale = self.active_object.scale
+
+
+class SelectInstancesOperator(bpy.types.Operator):
+    bl_idname = 'object.select_instances'
+    # Double "II" just for quick "space" start of operator (space -> "ii", an there is operator)
+    bl_label = 'Select IInstances'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        return len(context.selected_objects) > 0
+
+    def execute(self, context):
+        scene = context.scene
+        selected_objects = filter_named_data(context.selected_objects)
+        mesh_names = set([o.data.name for o in selected_objects])
+        objects_to_select = [obj for obj in scene.objects if obj.data.name in mesh_names]
+        for obj in objects_to_select:
+            obj.select = True
+        return {'FINISHED'}
+
+
+class FilterInstancesOperator(utils.BatchOperatorMixin, bpy.types.Operator):
+    bl_idname = 'object.filter_instances'
+    # Double "III" just for quick "space" start of operator (space -> "iii", an there is operator)
+    bl_label = 'Filter IIInstances'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    use_only_selected_objects = False
+    mesh_names = {}
+
+    def pre_filter_objects(self):
+        self.selected_objects = filter_named_data(self.selected_objects)
+        self.mesh_names = set([o.data.name for o in self.selected_objects])
+
+    def filter_object(self, obj):
+        return obj.data.name in self.mesh_names and is_multiuser(obj)
+
+    def process_object(self, obj):
+        obj.select = True
+
+
+class DeselectInstancesOperator(utils.BatchOperatorMixin, bpy.types.Operator):
+    bl_idname = 'object.deselect_instances'
+    bl_label = 'Deselect Instances'
+
+    def filter_object(self, obj):
+        return is_multiuser(obj)
+
+    def process_object(self, obj):
+        obj.select = False
+
+
+def create_panel(col):
+    operators = [
+        ImportTextAsInstancesOperator.bl_idname,
+        ExportInstancesAsTextOperator.bl_idname,
+        FindInstancesFromText.bl_idname,
+        (SelectInstancesOperator.bl_idname, 'Select Instances'),
+        (FilterInstancesOperator.bl_idname, 'Filter Instances'),
+        DeselectInstancesOperator.bl_idname,
+        DropInstancesOperator.bl_idname,
+        InstancesToCursourOperator.bl_idname,
+        CombineOperator.bl_idname,
+    ]
+    for op in operators:
+        draw_operator(col, op)
