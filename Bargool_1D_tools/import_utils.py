@@ -27,6 +27,8 @@ class ImportCleanupOperator(bpy.types.Operator):
             if settings.import_cleanup_clear_custom_normals:
                 bpy.ops.mesh.customdata_custom_splitnormals_clear()
             bpy.ops.object.mode_set(mode='EDIT')
+            if settings.import_cleanup_reveal_hidden:
+                bpy.ops.mesh.reveal()
             bpy.ops.mesh.select_all(action='SELECT')
             if settings.import_cleanup_remove_doubles:
                 threshold = settings.import_cleanup_remove_doubles_threshold
@@ -47,6 +49,8 @@ class ImportCleanupOperator(bpy.types.Operator):
 
 def create_panel(col, scene):
     col.operator('mesh.import_cleanup')
+    col.prop(scene.batch_operator_settings,
+             'import_cleanup_reveal_hidden')
     col.prop(scene.batch_operator_settings,
              'import_cleanup_clear_custom_normals')
     col.prop(scene.batch_operator_settings,

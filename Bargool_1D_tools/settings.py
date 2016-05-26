@@ -57,6 +57,7 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
     )
     import_cleanup_clear_custom_normals = bpy.props.BoolProperty(name='Clear custom normals',
                                                                  default=True)
+    import_cleanup_reveal_hidden = bpy.props.BoolProperty(name='Reveal hidden', default=True)
     geometry_inbound_only = bpy.props.BoolProperty(
         name='Inbound Only', default=True)
 

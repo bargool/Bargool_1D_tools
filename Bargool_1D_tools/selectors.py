@@ -107,7 +107,7 @@ class VerticalVerticesSelectOperator(bpy.types.Operator):
                     z for z in selected_z
                     if z - threshold < vert.co.z < z + threshold]
         else:
-            raise ValueError('Undefined behaviour: {}'.format(behaviour))q
+            raise ValueError('Undefined behaviour: {}'.format(behaviour))
 
         for vert in bm.verts:
             if not vert.hide and fitness_func(vert):

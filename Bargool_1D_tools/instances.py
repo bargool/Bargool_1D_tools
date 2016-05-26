@@ -17,8 +17,10 @@ def is_multiuser(obj):
 
 def find_instances(obj, context):
     """ Finds instances of object obj """
+    if not hasattr(obj.data, 'name'):
+        return
     mesh_name = obj.data.name
-    for o in context.scene.objects:
+    for o in filter_named_data(context.scene.objects):
         if o.data.name == mesh_name:
             yield o
 
@@ -189,7 +191,7 @@ class InstancesToCursourOperator(bpy.types.Operator):
     def execute(self, context):
         scene = context.scene
         cursor_location = scene.cursor_location
-        selected_multiuser = [o for o in context.selected_objects if is_multiuser(o)]
+        selected_multiuser = [o for o in filter_named_data(context.selected_objects) if is_multiuser(o)]
         for o in context.selected_objects:
             o.select = False
         objects = {}
@@ -232,7 +234,7 @@ class SelectInstancesOperator(bpy.types.Operator):
         scene = context.scene
         selected_objects = filter_named_data(context.selected_objects)
         mesh_names = set([o.data.name for o in selected_objects])
-        objects_to_select = [obj for obj in scene.objects if obj.data.name in mesh_names]
+        objects_to_select = [obj for obj in filter_named_data(scene.objects) if obj.data.name in mesh_names]
         for obj in objects_to_select:
             obj.select = True
         return {'FINISHED'}
@@ -248,8 +250,8 @@ class FilterInstancesOperator(utils.BatchOperatorMixin, bpy.types.Operator):
     mesh_names = {}
 
     def pre_filter_objects(self):
-        self.selected_objects = filter_named_data(self.selected_objects)
-        self.mesh_names = set([o.data.name for o in self.selected_objects])
+        self.objects = filter_named_data(self.objects)
+        self.mesh_names = set([o.data.name for o in filter_named_data(self.selected_objects)])
 
     def filter_object(self, obj):
         return obj.data.name in self.mesh_names and is_multiuser(obj)
