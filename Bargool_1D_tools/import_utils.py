@@ -21,6 +21,8 @@ class ImportCleanupOperator(bpy.types.Operator):
         for ob in objects:
             ob.select = True
             context.scene.objects.active = ob
+            if settings.import_cleanup_fix_double_faces:
+                ob.data.validate()
             # transform_apply works only with non-multiuser
             if settings.import_cleanup_apply_rotations and not instances.is_multiuser(ob):
                 bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
@@ -56,9 +58,11 @@ def create_panel(col, scene):
     col.prop(scene.batch_operator_settings,
              'import_cleanup_apply_rotations')
     col.prop(scene.batch_operator_settings,
-             'import_cleanup_remove_doubles')
+             'import_cleanup_fix_double_faces')
     col.prop(scene.batch_operator_settings,
              'import_cleanup_recalculate_normals')
+    col.prop(scene.batch_operator_settings,
+             'import_cleanup_remove_doubles')
     sub = col.row()
     sub.active = scene.batch_operator_settings.import_cleanup_remove_doubles
     sub.prop(scene.batch_operator_settings,
