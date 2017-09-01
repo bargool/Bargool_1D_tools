@@ -1,8 +1,12 @@
-# -*- coding: utf-8 -*-
-
-import bpy
+"""
+Slope operators
+"""
 import bmesh
+import bpy
+
 from .geometry_utils import create_slope_plane, Point
+
+__author__ = 'Aleksey Nakoryakov'
 
 
 class AlignToSlopeOperator(bpy.types.Operator):

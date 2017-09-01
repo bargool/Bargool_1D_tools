@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
-import abc
 import bpy
+
 from . import utils
 
 __author__ = 'Aleksey Nakoryakov'
@@ -46,7 +45,6 @@ class BatchRemoverMixin(utils.BatchOperatorMixin):
         )
         self.report({'INFO'}, message)
 
-    # @abc.abstractmethod
     def do_remove(self, obj):
         raise NotImplementedError
 
@@ -56,10 +54,6 @@ class BatchUVMapsEraserOperator(BatchRemoverMixin, bpy.types.Operator):
     bl_label = 'UV Maps Batch Remove'
     bl_description = 'Removes UV Maps from selected or all objects in scene'
     dropdown_name = 'UV Maps'
-
-    # operator_type = bpy.props.EnumProperty(items=(BatchRemoverMixin.OPERATOR_TYPE_ENUM.do_remove,
-    #                                               BatchRemoverMixin.OPERATOR_TYPE_ENUM.do_select),
-    #                                        options={'HIDDEN'})
 
     def filter_object(self, obj):
         """ We need to remove uv_textures. So we need objects with them """
@@ -273,7 +267,7 @@ class MirrorMDFRemoverOperator(BatchRemoverMixin, bpy.types.Operator):
             count += 1
 
 
-def create_panel_rems(col, scene):
+def create_panel(col, scene):
     col.operator(scene.batch_operator_settings.removers_dropdown,
                  text='Remove').operator_type = BatchRemoverMixin.OPERATOR_TYPE_ENUM.do_remove
     col.operator(scene.batch_operator_settings.removers_dropdown,

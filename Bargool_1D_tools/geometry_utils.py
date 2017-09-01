@@ -1,3 +1,10 @@
+"""
+Classes for geometry manipulations
+"""
+
+__author__ = 'Aleksey Nakoryakov'
+
+
 class Point(object):
     def __init__(self, x, y, z):
         self._x = x

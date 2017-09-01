@@ -1,7 +1,7 @@
-import imp
+import importlib
 import Bargool_1D_tools
 
-__author__ = 'alexey.nakoryakov'
+__author__ = 'Aleksey Nakoryakov'
 
 """
 This file is just for testing purposes. In blender text window in test scene input something like
@@ -20,6 +20,6 @@ exec(compile(open(filename).read(), filename, 'exec'))
 
 Bargool_1D_tools.unregister()
 
-imp.reload(Bargool_1D_tools)
+importlib.reload(Bargool_1D_tools)
 
 Bargool_1D_tools.register()

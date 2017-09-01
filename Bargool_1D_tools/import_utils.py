@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
-
-__author__ = 'Aleksey Nakoryakov'
+import math
 
 import bpy
-import math
+
 from . import instances
+
+__author__ = 'Aleksey Nakoryakov'
 
 
 class ImportCleanupOperator(bpy.types.Operator):

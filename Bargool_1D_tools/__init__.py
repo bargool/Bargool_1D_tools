@@ -1,8 +1,10 @@
-# -*- coding: utf-8 -*-
 import bpy
 from . import (selectors, import_utils, prop_matchers, geometry,
                removers, panels, instances, naming, miscellaneous, utils)
 from .settings import BatchOperatorSettings, BatchPanelSettings, TestSettings
+
+__author__ = 'Aleksey Nakoryakov'
+
 
 bl_info = {
     "blender": (2, 76, 1),
@@ -10,7 +12,7 @@ bl_info = {
     "description": "",
     "author": "Aleksey Nakoryakov, Paul Kotelevets aka 1D_Inc (concept design)",
     "category": "Object",
-    "version": (1, 8, 5),
+    "version": (1, 8, 6),
     "location": "View3D > Toolbar",
     "wiki_url": "https://github.com/bargool/Bargool_1D_tools",
     "tracker_url": "https://github.com/bargool/Bargool_1D_tools/issues",
@@ -18,10 +20,12 @@ bl_info = {
 
 
 def reload_modules():
-    import imp
-    for m in [selectors, import_utils, prop_matchers, removers, panels, settings, instances, naming, miscellaneous,
+    import importlib
+    for m in [selectors, import_utils, prop_matchers,
+              removers, panels, settings,
+              instances, naming, miscellaneous,
               geometry, utils]:
-        imp.reload(m)
+        importlib.reload(m)
 
 
 def register():

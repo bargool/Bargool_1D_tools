@@ -1,13 +1,11 @@
-# -*- coding: utf-8 -*-
+import collections
 
 import bpy
 from bpy_extras.io_utils import ExportHelper
-import collections
 
-from Bargool_1D_tools import utils
 from .utils import check_equality, OpenFileHelper, BatchOperatorMixin, draw_operator
 
-__author__ = 'alexey.nakoryakov'
+__author__ = 'Aleksey Nakoryakov'
 
 
 def is_multiuser(obj):
@@ -240,7 +238,7 @@ class SelectInstancesOperator(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class FilterInstancesOperator(utils.BatchOperatorMixin, bpy.types.Operator):
+class FilterInstancesOperator(BatchOperatorMixin, bpy.types.Operator):
     bl_idname = 'object.filter_instances'
     # Double "III" just for quick "space" start of operator (space -> "iii", an there is operator)
     bl_label = 'Filter IIInstances'
@@ -260,7 +258,7 @@ class FilterInstancesOperator(utils.BatchOperatorMixin, bpy.types.Operator):
         obj.select = True
 
 
-class DeselectInstancesOperator(utils.BatchOperatorMixin, bpy.types.Operator):
+class DeselectInstancesOperator(BatchOperatorMixin, bpy.types.Operator):
     bl_idname = 'object.deselect_instances'
     bl_label = 'Deselect Instances'
 

@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
+import bpy
 
 __author__ = 'Aleksey Nakoryakov'
-
-import bpy
 
 
 class MatchHideRenderOperator(bpy.types.Operator):

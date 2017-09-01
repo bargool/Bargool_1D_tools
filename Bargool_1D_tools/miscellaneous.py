@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
-import bpy
 import bmesh
+import bpy
 
 __author__ = 'Aleksey Nakoryakov'
 
@@ -113,12 +112,11 @@ class ObjDistributeByXOperator(bpy.types.Operator):
         return True if context.selected_objects else False
 
     def execute(self, context):
-        delta = max((obj.dimensions[0] for obj in context.selected_objects))
-
         x = context.active_object.location[0]
-        for obj in sorted(context.selected_objects[:], key=lambda o: o.name):
+        for obj in sorted(context.selected_objects,
+                          key=lambda o: sum(o.dimensions) / 3):
             obj.location[0] = x
-            x += obj.dimensions[0]*0.3 + delta
+            x += obj.dimensions[0] * 1.3
         return {'FINISHED'}
 
 

@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 import bpy
-from Bargool_1D_tools.removers import create_panel_rems
-from . import naming, import_utils, miscellaneous, geometry, instances
+
+from . import naming, import_utils, miscellaneous, geometry, instances, removers
 
 __author__ = 'Aleksey Nakoryakov'
 
@@ -53,7 +52,7 @@ class BatchSetPanel(bpy.types.Panel):
         if self.do_create_subpanel(top_col, 'do_show_remover', 'Batch Remover'):
             box = top_col.box()
             col = box.column(align=True)
-            create_panel_rems(col, scene)
+            removers.create_panel(col, scene)
 
         # Object import cleanup
         if self.do_create_subpanel(top_col, 'do_show_cleanup', 'Obj Import Cleanup'):

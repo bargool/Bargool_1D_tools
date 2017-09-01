@@ -1,10 +1,8 @@
-from Bargool_1D_tools.utils import draw_operator
-
-__author__ = 'alexey.nakoryakov'
-
 import bpy
-import math
+
 from . import utils
+
+__author__ = 'Aleksey Nakoryakov'
 
 
 def remove_prefix(s):
@@ -312,4 +310,4 @@ def create_panel(col):
         ObjectSelectNoDataOperator.bl_idname,
     ]
     for op in operators:
-        draw_operator(col, op)
+        utils.draw_operator(col, op)
