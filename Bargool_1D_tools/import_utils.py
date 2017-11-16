@@ -37,6 +37,9 @@ class ImportCleanupOperator(bpy.types.Operator):
                 bpy.ops.mesh.remove_doubles(threshold=threshold, use_unselected=False)
             if settings.import_cleanup_recalculate_normals:
                 bpy.ops.mesh.normals_make_consistent(inside=False)
+            if settings.import_cleanup_triangulate:
+                bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY',
+                                                   ngon_method='BEAUTY')
             if settings.import_cleanup_tris_to_quads:
                 limit = math.radians(settings.import_cleanup_tris_to_quads_limit)
                 bpy.ops.mesh.tris_convert_to_quads(face_threshold=limit,
@@ -68,6 +71,8 @@ def create_panel(col, scene):
     sub.prop(scene.batch_operator_settings,
              'import_cleanup_remove_doubles_threshold',
              slider=True)
+    col.prop(scene.batch_operator_settings,
+             'import_cleanup_triangulate')
     col.prop(scene.batch_operator_settings,
              'import_cleanup_tris_to_quads')
     sub = col.row()

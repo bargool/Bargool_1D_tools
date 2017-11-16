@@ -1,3 +1,5 @@
+from operator import attrgetter
+
 import bpy
 
 from .removers import BatchRemoverMixin
@@ -20,7 +22,7 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
     # We need all subclasses of BatchRemoverMixin in one dropdown
     operators = [
         (op.bl_idname, op.dropdown_name, get_description(op))
-        for op in sorted(BatchRemoverMixin.__subclasses__(), key=lambda x: x.dropdown_name)]
+        for op in sorted(BatchRemoverMixin.__subclasses__(), key=attrgetter('dropdown_name'))]
 
     removers_dropdown = bpy.props.EnumProperty(
         items=operators,
@@ -55,10 +57,22 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
     import_cleanup_tris_to_quads_limit = bpy.props.IntProperty(
         name='limit', default=60, min=0, max=360
     )
-    import_cleanup_clear_custom_normals = bpy.props.BoolProperty(name='Clear custom normals',
-                                                                 default=True)
-    import_cleanup_reveal_hidden = bpy.props.BoolProperty(name='Reveal hidden', default=True)
-    import_cleanup_fix_double_faces = bpy.props.BoolProperty(name='Fix Double Faces', default=False)
+    import_cleanup_clear_custom_normals = bpy.props.BoolProperty(
+        name='Clear custom normals',
+        default=True,
+    )
+    import_cleanup_reveal_hidden = bpy.props.BoolProperty(
+        name='Reveal hidden',
+        default=True,
+    )
+    import_cleanup_fix_double_faces = bpy.props.BoolProperty(
+        name='Fix Double Faces',
+        default=False,
+    )
+    import_cleanup_triangulate = bpy.props.BoolProperty(
+        name='Triangulate',
+        default=False,
+    )
     geometry_inbound_only = bpy.props.BoolProperty(
         name='Inbound Only', default=True)
 
@@ -66,7 +80,7 @@ class BatchOperatorSettings(bpy.types.PropertyGroup):
                                                         default=True)
 
 
-class TestSettings():
+class TestSettings:
     text = None
     slope_plane = None
 
