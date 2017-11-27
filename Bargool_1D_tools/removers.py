@@ -267,6 +267,28 @@ class MirrorMDFRemoverOperator(BatchRemoverMixin, bpy.types.Operator):
             count += 1
 
 
+class MultipleUVMapsRemoverOperator(BatchRemoverMixin, bpy.types.Operator):
+    bl_idname = 'object.multiple_uvmaps_remover'
+    bl_label = 'Multiple UV Maps Batch Remove'
+    bl_description = ('Removes all except active UV Maps from selected '
+                      'or all objects in scene')
+    dropdown_name = 'Multiple UV Maps'
+
+    def filter_object(self, obj):
+        return hasattr(obj.data, 'uv_textures') and len(obj.data.uv_textures) > 1
+
+    def do_remove(self, obj):
+        count = 0
+        textures = obj.data.uv_textures
+        textures.active_index = 0
+        for _ in range(len(textures) - 1):
+            if textures[textures.active_index].active_render:
+                textures.active_index += 1
+            bpy.ops.mesh.uv_texture_remove()
+            count += 1
+        return count
+
+
 def create_panel(col, scene):
     col.operator(scene.batch_operator_settings.removers_dropdown,
                  text='Remove').operator_type = BatchRemoverMixin.OPERATOR_TYPE_ENUM.do_remove
