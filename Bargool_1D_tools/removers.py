@@ -33,10 +33,9 @@ class BatchRemoverMixin(utils.BatchOperatorMixin):
 
     def process_object(self, obj):
         self.count += 1
-        if self.operator_type == self.OPERATOR_TYPE_ENUM.do_select:
-            obj.select = True
-        else:
+        if self.operator_type == self.OPERATOR_TYPE_ENUM.do_remove:
             self.do_remove(obj)
+        obj.select = True  # All you need is love!
 
     def post_process_objects(self):
         message = '{} {} properties'.format(
@@ -287,6 +286,27 @@ class MultipleUVMapsRemoverOperator(BatchRemoverMixin, bpy.types.Operator):
             bpy.ops.mesh.uv_texture_remove()
             count += 1
         return count
+
+
+class BevelModifierRemoverOperator(BatchRemoverMixin, bpy.types.Operator):
+    bl_idname = 'object.bevel_modifier_remover'
+    bl_label = 'Bevel modifier Batch Remove'
+    bl_description = ('Removes or selects Bevel modifiers from selected '
+                      'or all objects in scene')
+    dropdown_name = 'Bevel'
+
+    modifier_type = 'BEVEL'
+
+    def filter_object(self, obj):
+        has_modifiers = hasattr(obj, 'modifiers')
+        return has_modifiers and any([m for m in obj.modifiers if m.type == self.modifier_type])
+
+    def do_remove(self, obj):
+        count = 0
+        bevels = [m for m in obj.modifiers if m.type == self.modifier_type]
+        for modifier in bevels:
+            bpy.ops.object.modifier_remove(modifier=modifier.name)
+            count += 1
 
 
 def create_panel(col, scene):
