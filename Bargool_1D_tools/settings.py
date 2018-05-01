@@ -14,10 +14,10 @@ def get_description(operator):
 
 class BatchOperatorSettings(bpy.types.PropertyGroup):
     work_without_selection = bpy.props.BoolProperty(
-        name='Work without selection',
+        name='Whole scene',
         default=False,
-        description='If set, batch erasers will'
-                    ' work with all objects without selection')
+        description='If set, batch erasers will '
+                    'work with all objects without selection')
 
     # We need all subclasses of BatchRemoverMixin in one dropdown
     operators = [

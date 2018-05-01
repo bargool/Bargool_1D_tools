@@ -30,6 +30,8 @@ class BatchRemoverMixin(utils.BatchOperatorMixin):
 
     def pre_filter_objects(self):
         self.count = 0
+        if self.get_use_selected_objects():
+            utils.drop_selection(self.context.scene)
 
     def process_object(self, obj):
         self.count += 1
@@ -307,6 +309,29 @@ class BevelModifierRemoverOperator(BatchRemoverMixin, bpy.types.Operator):
         for modifier in bevels:
             bpy.ops.object.modifier_remove(modifier=modifier.name)
             count += 1
+
+
+class EmptySlotsRemoverOperator(BatchRemoverMixin, bpy.types.Operator):
+    bl_idname = 'object.empty_slots_remover'
+    bl_label = 'Empty slots Batch Remove'
+    bl_description = ('Removes empty slots or selects objects with empty slots '
+                      'from selected or all objects in scene')
+    dropdown_name = 'Empty material slots'
+
+    def filter_object(self, obj):
+        slots = getattr(obj, 'material_slots')
+        return slots and any(s for s in slots if not s.material)
+
+    def do_remove(self, obj):
+        count = 0
+        for idx in self._get_empty_index(obj):
+            obj.active_material_index = idx
+            bpy.ops.object.material_slot_select()
+            bpy.ops.object.material_slot_remove()
+        return count
+
+    def _get_empty_index(self, obj):
+        yield next(idx for idx, slot in enumerate(obj.material_slots) if not slot.material)
 
 
 def create_panel(col, scene):
