@@ -39,9 +39,7 @@ class BlockInstance(object):
     def __init__(self, *args):
         if len(args) == 1 and isinstance(args[0], collections.Iterable):
             s = args[0]
-            s = s.strip()
-            s = s.replace('(', '')
-            s = s.replace(')', '')
+            s = s.strip(' ()')
             args = s.split()
         elif len(args) == 1 and isinstance(args[0], bpy.types.Object):
             o = args[0]
@@ -86,14 +84,11 @@ class BlockInstance(object):
 
 
 def read_file(filepath):
+    d = collections.defaultdict(list)
     with open(filepath, 'r') as f:
         lst = [BlockInstance(l) for l in f if l.startswith('(')]
-        d = {}
         for l in lst:
-            if l.name not in d:
-                d[l.name] = [l, ]
-            else:
-                d[l.name].append(l)
+            d[l.name].append(l)
     return d
 
 
@@ -168,11 +163,9 @@ class DropInstancesOperator(bpy.types.Operator):
     def execute(self, context):
         scene = context.scene
         acitive_object = context.active_object
-        # object_layers = list(acitive_object.layers)
         matrices = [o.matrix_local for o in find_instances(acitive_object, context) if o.name != acitive_object.name]
         bpy.ops.mesh.separate()
         separated_object = scene.objects[0]
-        # separated_object.layers = object_layers
         for m in matrices:
             duplicated = create_instance(separated_object, scene)
             duplicated.matrix_local = m
@@ -193,7 +186,7 @@ class InstancesToCursourOperator(bpy.types.Operator):
         for o in context.selected_objects:
             o.select = False
         objects = {}
-        # We need only one object of each seleceted mesh
+        # We need only one object of each selected mesh
         for o in selected_multiuser:
             if o.data.name not in objects:
                 objects[o.data.name] = o
