@@ -13,7 +13,8 @@ Includes few instruments:
 * Select Same HideRender
 * Isolate Layers
 
+Description from Paul Kotelevets: https://blenderartists.org/t/1d-scripts-bargool-1d-tools-main-thread/668937
 
-Check updates: https://github.com/bargool/1D_Bargool_tools/releases/
+Check updates (And download only included zip-file): https://github.com/bargool/1D_Bargool_tools/releases/
 
 Source code: https://github.com/bargool/1D_Bargool_tools/
